@@ -22,7 +22,7 @@
     <RepositoryUrl>https://github.com/JonPSmith/EfCore.GenericServices</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Entity Framework Core, EfCore.GenericServices, ASP.NET Core</PackageTags>
-    <PackageReleaseNotes>Updated to NET Core 2.1</PackageReleaseNotes>
+    <PackageReleaseNotes>Added CreateResponse extension methods to turn `IGenericStatus` into standard Web API responses</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/EfCore.GenericServices/master/Images/EfCore-GenericServices-AspNetCoreNuGetIcon128.png</PackageIconUrl>
   </PropertyGroup>
 
@@ -30,9 +30,13 @@
     <DocumentationFile>bin\Debug\netcoreapp2.0\GenericServices.AspNetCore.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netcoreapp2.0\GenericServices.AspNetCore.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="EfCore.GenericServices" Version="1.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.0" />
+    <PackageReference Include="EfCore.GenericServices" Version="1.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>
 
 </Project>
