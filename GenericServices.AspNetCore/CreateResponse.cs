@@ -1,6 +1,9 @@
 ﻿// Copyright (c) 2018 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -17,13 +20,13 @@ namespace GenericServices.AspNetCore
         /// </summary>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static IActionResult Response(this IStatusGeneric status)
+        public static IActionResult Response(this GenericServices.IStatusGeneric status)
         {
             if (status.IsValid)
                 return new OkObjectResult(new { status.Message });
 
             //it has errors
-            return CreateBadRequestObjectResult(status);
+            return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
         }
 
         /// <summary>
@@ -44,18 +47,28 @@ namespace GenericServices.AspNetCore
                     : (ActionResult<T>)new NotFoundObjectResult(new { status.Message });
 
             //it has errors
-            return CreateBadRequestObjectResult(status);
+            return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
         }
 
         //---------------------------------------------------
         //private 
 
-        private static BadRequestObjectResult CreateBadRequestObjectResult(IStatusGeneric status)
+        private static BadRequestObjectResult CreateBadRequestObjectResult(IEnumerable<ValidationResult> validationResults)
         {
             //I copy the errors to a ModelState as BadRequestObjectResult has a version that turns the ModelStae into its standard error format
             var modelState = new ModelStateDictionary();
-            foreach (var error in status.Errors)
-                modelState.AddModelError("", error.ToString());
+            foreach (var validationResult in validationResults)
+            {
+                if (validationResult.MemberNames.Any())
+                    foreach (var propertyName in validationResult.MemberNames)
+                    {
+                        modelState.AddModelError(propertyName, validationResult.ErrorMessage);
+                    }
+                else
+                {
+                    modelState.AddModelError("", validationResult.ErrorMessage);
+                }
+            }
             return new BadRequestObjectResult(modelState);
         }
     }
