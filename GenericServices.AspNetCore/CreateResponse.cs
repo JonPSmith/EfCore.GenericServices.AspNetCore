@@ -32,14 +32,14 @@ namespace GenericServices.AspNetCore
         /// <summary>
         /// This will return a result value, with the status Message
         /// If there are no errors and the result is not null it will return a HTTP 200 with a json result containing the status Message and the results
-        /// If there are no errors but result is  null it will return a HTTP 404 the status Message
+        /// If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
         /// If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="status"></param>
         /// <param name="results"></param>
         /// <returns></returns>
-        public static ActionResult<T> Response<T>(this IStatusGeneric status, T results) 
+        public static ActionResult<T> Response<T>(this GenericServices.IStatusGeneric status, T results) 
         {
             if (status.IsValid)
                 return results != null
@@ -48,6 +48,42 @@ namespace GenericServices.AspNetCore
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
+        }
+
+        /// <summary>
+        /// This will return a HTTP 200 with the status message if Valid,
+        /// otherwise it will returns a HTTP 400 with the error information in the standard WebAPI format
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public static IActionResult Response(this GenericBizRunner.IStatusGeneric status)
+        {
+            if (!status.HasErrors)
+                return new OkObjectResult(new { status.Message });
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors);
+        }
+
+        /// <summary>
+        /// This will return a result value, with the status Message
+        /// If there are no errors and the result is not null it will return a HTTP 200 with a json result containing the status Message and the results
+        /// If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
+        /// If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="status"></param>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        public static ActionResult<T> Response<T>(this GenericBizRunner.IStatusGeneric status, T results)
+        {
+            if (!status.HasErrors)
+                return results != null
+                    ? (ActionResult<T>)new OkObjectResult(new { status.Message, results })
+                    : (ActionResult<T>)new NotFoundObjectResult(new { status.Message });
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors);
         }
 
         //---------------------------------------------------

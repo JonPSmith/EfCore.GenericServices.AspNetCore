@@ -18,7 +18,10 @@
     <RepositoryUrl>https://github.com/JonPSmith/EfCore.GenericServices</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Entity Framework Core, EfCore.GenericServices, ASP.NET Core</PackageTags>
-    <PackageReleaseNotes>Added CreateResponse extension methods to turn `IGenericStatus` into standard Web API responses</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - New Feature: Added `Response` extension methods to turn `IGenericStatus` into standard Web API responses
+      - New Feature: Now supports EfCore.GenericBizRunner, providing the same conversions as for EfCore.GenericServices
+    </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/EfCore.GenericServices/master/Images/EfCore-GenericServices-AspNetCoreNuGetIcon128.png</PackageIconUrl>
   </PropertyGroup>
 
@@ -31,6 +34,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EfCore.GenericBizRunner" Version="2.0.0" />
     <PackageReference Include="EfCore.GenericServices" Version="1.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>

@@ -4,10 +4,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using GenericServices;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 
@@ -15,7 +12,7 @@ namespace Test.Helpers
 {
     public static class ResponseCheckers
     {
-        public static void CheckResponse(this IActionResult actionResult, IStatusGeneric status)
+        public static void CheckResponse(this IActionResult actionResult, GenericServices.IStatusGeneric status)
         {
             actionResult.ShouldNotBeNull();
             if (status.IsValid)
@@ -28,11 +25,11 @@ namespace Test.Helpers
             }
             else
             {
-                CheckErrorResponse(actionResult as BadRequestObjectResult, status);
+                CheckErrorResponse(actionResult as BadRequestObjectResult, status.Errors.Select(x => x.ErrorResult));
             }
         }
 
-        public static void CheckResponse<T>(this ActionResult<T> actionResult, IStatusGeneric status, T results)
+        public static void CheckResponse<T>(this ActionResult<T> actionResult, GenericServices.IStatusGeneric status, T results)
         {
             actionResult.ShouldNotBeNull();
             if (status.IsValid)
@@ -54,15 +51,61 @@ namespace Test.Helpers
             }
             else
             {
-                CheckErrorResponse(actionResult.Result as ObjectResult, status);
+                CheckErrorResponse(actionResult.Result as ObjectResult, status.Errors.Select(x => x.ErrorResult));
             }
         }
 
-        private static void CheckErrorResponse(ObjectResult result, IStatusGeneric status)
+        public static void CheckResponse(this IActionResult actionResult, GenericBizRunner.IStatusGeneric status)
+        {
+            actionResult.ShouldNotBeNull();
+            if (!status.HasErrors)
+            {
+                actionResult.ShouldNotBeNull();
+                var result = actionResult as OkObjectResult;
+                Assert.NotNull(result);
+                result.StatusCode.ShouldEqual(200);
+                result.Value.ToString().ShouldEqual("{ Message = " + status.Message + " }");
+            }
+            else
+            {
+                CheckErrorResponse(actionResult as BadRequestObjectResult, status.Errors);
+            }
+        }
+
+        public static void CheckResponse<T>(this ActionResult<T> actionResult, GenericBizRunner.IStatusGeneric status, T results)
+        {
+            actionResult.ShouldNotBeNull();
+            if (!status.HasErrors)
+            {
+                if (results == null)
+                {
+                    var result = actionResult.Result as NotFoundObjectResult;
+                    result.ShouldNotBeNull();
+                    result.StatusCode.ShouldEqual(404);
+                    result.Value.ToString().ShouldEqual("{ Message = " + status.Message + " }");
+                }
+                else
+                {
+                    var result = actionResult.Result as OkObjectResult;
+                    result.ShouldNotBeNull();
+                    result.StatusCode.ShouldEqual(200);
+                    result.Value.ToString().ShouldEqual("{ Message = " + status.Message + ", results = " + results + " }");
+                }
+            }
+            else
+            {
+                CheckErrorResponse(actionResult.Result as ObjectResult, status.Errors);
+            }
+        }
+
+        //----------------------------------------------------
+        //private
+
+        private static void CheckErrorResponse(ObjectResult result, IEnumerable<ValidationResult> validationResults)
         {
             Assert.NotNull(result);
             result.StatusCode.ShouldEqual(400);
-            var expectedDict = FormExpectedErrorResponse(status.Errors.Select(x => x.ErrorResult));
+            var expectedDict = FormExpectedErrorResponse(validationResults);
             var dict = (Dictionary<string, object>)result.Value;
             dict.Count.ShouldEqual(expectedDict.Keys.Count);
             foreach (var propertyName in expectedDict.Keys)
