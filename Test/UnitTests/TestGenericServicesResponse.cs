@@ -123,5 +123,19 @@ namespace Test.UnitTests
             //VERIFY
             actionResult.CheckResponse(status, 1);
         }
+
+        [Fact]
+        public void TestStatusErrorWithClassResultNullOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+            status.AddError("Bad");
+
+            //ATTEMPT
+            var actionResult = status.Response<string>(null);
+
+            //VERIFY
+            actionResult.CheckResponse(status, null);
+        }
     }
 }
