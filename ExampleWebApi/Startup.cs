@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ExampleDatabase;
+using ExampleWebApi.Dtos;
 using ExampleWebApi.Helpers;
+using GenericBizRunner.Configuration;
+using GenericServices.Setup;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -41,9 +45,13 @@ namespace ExampleWebApi
             connection.Open();  //see https://github.com/aspnet/EntityFramework/issues/6968
             services.AddDbContext<ExampleDbContext>(options => options.UseSqlite(connection));
 
+            services.GenericServicesSimpleSetup<ExampleDbContext>(Assembly.GetAssembly(typeof(ChangeNameDto)));
+            services.RegisterGenericBizRunnerBasic<ExampleDbContext>();
+            //No need to register AutoMapper as the business logic doesn't map from a DTO to another class
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "My API V1", Version = "v1" });
             });
         }
 
