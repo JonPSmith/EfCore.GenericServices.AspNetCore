@@ -39,9 +39,10 @@ namespace ExampleWebApi.Controllers
             return service.Response(service.ReadSingle<TodoItem>(id));
         }
 
-        // POST api/todo?name=NewName
+        // POST api/todo {name='name', difficulty=1}
         /// <summary>
-        /// Creates a new item. NOTE: There is extra validation (name can't end with !) in the business logic
+        /// Creates a new item and returns the created entity, with the Id value provided by the database
+        /// NOTE: to show how business logic might work I added extra validation (name can't end with !) in the business logic
         /// </summary>
         /// <param name="item"></param>
         /// <param name="service"></param>
@@ -51,13 +52,13 @@ namespace ExampleWebApi.Controllers
             return service.Status.Response(service.RunBizAction<TodoItem>(item));
         }
 
-        // POST api/todo?name=NewName
+        // PUT api/todo {id=1, name='NewName'}
         /// <summary>
-        /// Updates the Name. NOTE:There is extra validation (name can't end with !) in the DDD access method
+        /// Updates the Name. It does this via a DDD-styles entity access method.
+        /// NOTE: There is extra validation (name can't end with !) in the DDD access method
         /// </summary>
         /// <param name="dto">dto containing Id and Name</param>
         /// <param name="service"></param>
-        // PUT api/todo?id=1&name=NewName
         [Route("putname")]
         [HttpPut()]
         public IActionResult PutName(ChangeNameDto dto, [FromServices]ICrudServices service)
@@ -67,12 +68,13 @@ namespace ExampleWebApi.Controllers
         }
 
         /// <summary>
-        /// Updates the difficulty
+        /// Updates the Difficulty. It does this via a DDD-styles entity access method.
+        /// NOTE: this access method doesn't return a status, i.e. there is no extra validation in the access method
         /// </summary>
         /// <param name="dto">dto containing Id and Difficulty number</param>
         /// <param name="service"></param>
         /// <returns></returns>
-        // PUT api/todo?id=1&difficulty=3
+        // PUT api/todo {id=1, difficulty=3}
         [Route("putdifficulty")]
         [HttpPut]
         public IActionResult PutDifficuty(ChangeDifficultyDto dto, [FromServices]ICrudServices service)

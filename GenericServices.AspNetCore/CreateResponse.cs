@@ -30,10 +30,28 @@ namespace GenericServices.AspNetCore
         }
 
         /// <summary>
+        /// If the status has no errors then it will HTTP response with the status code provided in the
+        /// validStatusCode property and the message from the status
+        /// otherwise it will returns a HTTP 400 with the error information in the standard WebAPI format
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="validStatusCode">Optional: HTTP status code for non-error status - defaults to 200</param>
+        /// <returns></returns>
+        public static IActionResult ResponseWithValidCode(this GenericServices.IStatusGeneric status, int validStatusCode)
+        {
+            if (status.IsValid)
+                return new ObjectResult(new { status.Message }) { StatusCode = validStatusCode };
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
+        }
+
+        /// <summary>
         /// This will return a result value, with the status Message
-        /// If there are no errors and the result is not null it will return a HTTP 200 with a json result containing the status Message and the results
-        /// If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
-        /// If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
+        /// 1. If there are no errors and the result is not null it will return a If the status has no errors then it will return
+        ///     a HTTP response with the status code provided in the validStatusCode property and the message from the status
+        /// 2. If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
+        /// 3. If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="status"></param>
@@ -51,6 +69,30 @@ namespace GenericServices.AspNetCore
         }
 
         /// <summary>
+        /// This will return a result value, with the status Message
+        /// If there are no errors and the result is not null it will return a HTTP 200 with a json result containing the status Message and the results
+        /// If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
+        /// If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="status"></param>
+        /// <param name="results"></param>
+        /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
+        /// <returns></returns>
+        public static ActionResult<T> ResponseWithValidCode<T>(this GenericServices.IStatusGeneric status, T results, int validStatusCode)
+        {
+            if (status.IsValid)
+                return results != null
+                    ? (ActionResult<T>)new ObjectResult(new { status.Message, results }) { StatusCode = validStatusCode }
+                    : (ActionResult<T>)new NotFoundObjectResult(new { status.Message });
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
+        }
+
+        // -- Now the GenericBixRunner versions
+
+        /// <summary>
         /// This will return a HTTP 200 with the status message if Valid,
         /// otherwise it will returns a HTTP 400 with the error information in the standard WebAPI format
         /// </summary>
@@ -60,6 +102,23 @@ namespace GenericServices.AspNetCore
         {
             if (!status.HasErrors)
                 return new OkObjectResult(new { status.Message });
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors);
+        }
+
+        /// <summary>
+        /// If the status has no errors then it will HTTP response with the status code provided in the
+        /// validStatusCode property and the message from the status
+        /// otherwise it will returns a HTTP 400 with the error information in the standard WebAPI format
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="validStatusCode">Optional: HTTP status code for non-error status - defaults to 200</param>
+        /// <returns></returns>
+        public static IActionResult ResponseWithValidCode(this GenericBizRunner.IStatusGeneric status, int validStatusCode)
+        {
+            if (!status.HasErrors)
+                return new ObjectResult(new { status.Message }) { StatusCode = validStatusCode };
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors);
@@ -80,6 +139,28 @@ namespace GenericServices.AspNetCore
             if (!status.HasErrors)
                 return results != null
                     ? (ActionResult<T>)new OkObjectResult(new { status.Message, results })
+                    : (ActionResult<T>)new NotFoundObjectResult(new { status.Message });
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors);
+        }
+
+        /// <summary>
+        /// This will return a result value, with the status Message
+        /// If there are no errors and the result is not null it will return a HTTP 200 with a json result containing the status Message and the results
+        /// If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
+        /// If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="status"></param>
+        /// <param name="results"></param>
+        /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
+        /// <returns></returns>
+        public static ActionResult<T> ResponseWithValidCode<T>(this GenericBizRunner.IStatusGeneric status, T results, int validStatusCode)
+        {
+            if (!status.HasErrors)
+                return results != null
+                    ? (ActionResult<T>)new ObjectResult(new { status.Message, results }) { StatusCode = validStatusCode }
                     : (ActionResult<T>)new NotFoundObjectResult(new { status.Message });
 
             //it has errors

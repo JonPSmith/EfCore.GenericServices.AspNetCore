@@ -7,6 +7,7 @@ using ExampleDatabase;
 using ExampleWebApi.Dtos;
 using ExampleWebApi.Helpers;
 using GenericBizRunner.Configuration;
+using GenericServices.Configuration;
 using GenericServices.Setup;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,7 +46,12 @@ namespace ExampleWebApi
             connection.Open();  //see https://github.com/aspnet/EntityFramework/issues/6968
             services.AddDbContext<ExampleDbContext>(options => options.UseSqlite(connection));
 
-            services.GenericServicesSimpleSetup<ExampleDbContext>(Assembly.GetAssembly(typeof(ChangeNameDto)));
+            services.GenericServicesSimpleSetup<ExampleDbContext>(
+                new GenericServicesConfig
+                {
+                    NoErrorOnReadSingleNull = true //When working with WebAPI you should set this flag. Responce then sends 404 on null result
+                },
+                Assembly.GetAssembly(typeof(ChangeNameDto)));
             services.RegisterGenericBizRunnerBasic<ExampleDbContext>();
             //No need to register AutoMapper as the business logic doesn't map from a DTO to another class
 

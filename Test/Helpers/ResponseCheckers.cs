@@ -14,14 +14,19 @@ namespace Test.Helpers
     {
         public static void CheckResponse(this IActionResult actionResult, GenericServices.IStatusGeneric status)
         {
+            actionResult.CheckResponseWithValidCode(status, 200);
+        }
+
+        public static void CheckResponseWithValidCode(this IActionResult actionResult, GenericServices.IStatusGeneric status, int validStatusCode)
+        {
             actionResult.ShouldNotBeNull();
             if (status.IsValid)
             {
                 actionResult.ShouldNotBeNull();
-                var result = actionResult as OkObjectResult;
+                var result = actionResult as ObjectResult;
                 Assert.NotNull(result);
-                result.StatusCode.ShouldEqual(200);
-                result.Value.ToString().ShouldEqual("{ Message = "+ status.Message + " }");
+                result.StatusCode.ShouldEqual(validStatusCode);
+                result.Value.ToString().ShouldEqual("{ Message = " + status.Message + " }");
             }
             else
             {
@@ -30,6 +35,11 @@ namespace Test.Helpers
         }
 
         public static void CheckResponse<T>(this ActionResult<T> actionResult, GenericServices.IStatusGeneric status, T results)
+        {
+            actionResult.CheckResponseWithValidCode<T>(status, results, 200);
+        }
+
+        public static void CheckResponseWithValidCode<T>(this ActionResult<T> actionResult, GenericServices.IStatusGeneric status, T results, int validStatusCode)
         {
             actionResult.ShouldNotBeNull();
             if (status.IsValid)
@@ -43,9 +53,9 @@ namespace Test.Helpers
                 }
                 else
                 {
-                    var result = actionResult.Result as OkObjectResult;
+                    var result = actionResult.Result as ObjectResult;
                     result.ShouldNotBeNull();
-                    result.StatusCode.ShouldEqual(200);
+                    result.StatusCode.ShouldEqual(validStatusCode);
                     result.Value.ToString().ShouldEqual("{ Message = " + status.Message + ", results = " + results + " }");
                 }
             }
@@ -57,13 +67,18 @@ namespace Test.Helpers
 
         public static void CheckResponse(this IActionResult actionResult, GenericBizRunner.IStatusGeneric status)
         {
+            actionResult.CheckResponseWithValidCode(status, 200);
+        }
+
+        public static void CheckResponseWithValidCode(this IActionResult actionResult, GenericBizRunner.IStatusGeneric status, int validStatusCode)
+        {
             actionResult.ShouldNotBeNull();
             if (!status.HasErrors)
             {
                 actionResult.ShouldNotBeNull();
-                var result = actionResult as OkObjectResult;
+                var result = actionResult as ObjectResult;
                 Assert.NotNull(result);
-                result.StatusCode.ShouldEqual(200);
+                result.StatusCode.ShouldEqual(validStatusCode);
                 result.Value.ToString().ShouldEqual("{ Message = " + status.Message + " }");
             }
             else
@@ -73,6 +88,11 @@ namespace Test.Helpers
         }
 
         public static void CheckResponse<T>(this ActionResult<T> actionResult, GenericBizRunner.IStatusGeneric status, T results)
+        {
+            actionResult.CheckResponseWithValidCode<T>(status, results, 200);
+        }
+
+        public static void CheckResponseWithValidCode<T>(this ActionResult<T> actionResult, GenericBizRunner.IStatusGeneric status, T results, int validStatusCode)
         {
             actionResult.ShouldNotBeNull();
             if (!status.HasErrors)
@@ -86,9 +106,9 @@ namespace Test.Helpers
                 }
                 else
                 {
-                    var result = actionResult.Result as OkObjectResult;
+                    var result = actionResult.Result as ObjectResult;
                     result.ShouldNotBeNull();
-                    result.StatusCode.ShouldEqual(200);
+                    result.StatusCode.ShouldEqual(validStatusCode);
                     result.Value.ToString().ShouldEqual("{ Message = " + status.Message + ", results = " + results + " }");
                 }
             }

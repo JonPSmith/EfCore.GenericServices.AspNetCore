@@ -24,6 +24,20 @@ namespace Test.UnitTests
         }
 
         [Fact]
+        public void TestStatusIsValidWithStatusCodeOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+
+            //ATTEMPT
+            var actionResult = status.ResponseWithValidCode(201);
+
+            //VERIFY
+            actionResult.CheckResponseWithValidCode(status, 201);
+        }
+
+
+        [Fact]
         public void TestStatusHasErrorOk()
         {
             //SETUP
@@ -85,6 +99,19 @@ namespace Test.UnitTests
         }
 
         [Fact]
+        public void TestStatusIsValidWithResultAndStatusCodeOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+
+            //ATTEMPT
+            var actionResult = status.ResponseWithValidCode(1, 201);
+
+            //VERIFY
+            actionResult.CheckResponseWithValidCode(status, 1, 201);
+        }
+
+        [Fact]
         public void TestStatusIsValidWithClassResultOk()
         {
             //SETUP
@@ -105,6 +132,19 @@ namespace Test.UnitTests
 
             //ATTEMPT
             var actionResult = status.Response<string>(null);
+
+            //VERIFY
+            actionResult.CheckResponse(status, null);
+        }
+
+        [Fact]
+        public void TestStatusIsValidWithClassResultNullAndStatusCodeOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+
+            //ATTEMPT
+            var actionResult = status.ResponseWithValidCode<string>(null, 200);
 
             //VERIFY
             actionResult.CheckResponse(status, null);
