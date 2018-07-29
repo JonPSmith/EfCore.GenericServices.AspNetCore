@@ -11,7 +11,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="EfCore.GenericBizRunner" Version="2.0.1" />
-    <PackageReference Include="EfCore.GenericServices" Version="1.2.3" />
+    <PackageReference Include="EfCore.GenericServices" Version="1.2.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
