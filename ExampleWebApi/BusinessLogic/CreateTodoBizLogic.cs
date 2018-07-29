@@ -25,9 +25,8 @@ namespace ExampleWebApi.BusinessLogic
 
             var item = new TodoItem(inputData.Name, inputData.Difficulty);
             _context.Add(item);
-
-            Message = $"Successfully added the todo item '{inputData.Name}'";
-
+            
+            Message = $"Successfully saved the todo item '{inputData.Name}'.";
             return item;
         }
     }

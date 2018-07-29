@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using ExampleDatabase;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
+[assembly: InternalsVisibleTo("Test")]
 
 namespace ExampleWebApi.Helpers
 {
@@ -34,7 +37,7 @@ namespace ExampleWebApi.Helpers
             return webHost;
         }
 
-        private static void SeedDatabase(this ExampleDbContext context)
+        internal static void SeedDatabase(this ExampleDbContext context)
         {
             var startupItems = new List<TodoItem>
             {

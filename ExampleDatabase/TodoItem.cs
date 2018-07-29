@@ -9,7 +9,7 @@ namespace ExampleDatabase
 {
     public class TodoItem
     {
-        public long Id { get; private set; }
+        public int Id { get; private set; }
 
         [Required(AllowEmptyStrings = false)]
         public string Name { get; private set; }

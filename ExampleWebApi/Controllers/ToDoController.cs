@@ -46,10 +46,11 @@ namespace ExampleWebApi.Controllers
         /// </summary>
         /// <param name="item"></param>
         /// <param name="service"></param>
+        /// <returns>If succuesful it returns a HTTP 201 with the created entity, including its primary key</returns>
         [HttpPost]
         public ActionResult<TodoItem> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
         {
-            return service.Status.Response(service.RunBizAction<TodoItem>(item));
+            return service.Status.ResponseWithValidCode(service.RunBizAction<TodoItem>(item), 201);
         }
 
         // PUT api/todo {id=1, name='NewName'}

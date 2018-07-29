@@ -6,13 +6,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- see https://stackoverflow.com/a/51026513/1434764 on why we need -->
-    <RuntimeFrameworkVersion>2.1.2</RuntimeFrameworkVersion>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="EfCore.GenericBizRunner" Version="2.0.0" />
+    <PackageReference Include="EfCore.GenericBizRunner" Version="2.0.1" />
     <PackageReference Include="EfCore.GenericServices" Version="1.2.3" />
     <PackageReference Include="EfCore.TestSupport" Version="1.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
@@ -24,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExampleDatabase\ExampleDatabase.csproj" />
+    <ProjectReference Include="..\ExampleWebApi\ExampleWebApi.csproj" />
     <ProjectReference Include="..\GenericServices.AspNetCore\GenericServices.AspNetCore.csproj" />
   </ItemGroup>
 

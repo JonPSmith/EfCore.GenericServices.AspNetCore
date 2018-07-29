@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using ExampleDatabase;
+using ExampleWebApi.BusinessLogic;
 using ExampleWebApi.Dtos;
 using ExampleWebApi.Helpers;
 using GenericBizRunner.Configuration;
@@ -53,11 +56,20 @@ namespace ExampleWebApi
                 },
                 Assembly.GetAssembly(typeof(ChangeNameDto)));
             services.RegisterGenericBizRunnerBasic<ExampleDbContext>();
-            //No need to register AutoMapper as the business logic doesn't map from a DTO to another class
+            services.AddAutoMapper(Assembly.GetAssembly(typeof (CreateTodoBizLogic)));
+            services.AddTransient(typeof(ICreateTodoBizLogic), typeof(CreateTodoBizLogic));
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API V1", Version = "v1" });
+
+                //see https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml#xml-comments
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (!File.Exists(xmlPath))
+                    throw new InvalidOperationException("The XML file does not exist for Swagger - See IXNetDevDocs/HowTo/SetupAppForSwagger.md for more info.");
+                c.IncludeXmlComments(xmlPath);
             });
         }
 

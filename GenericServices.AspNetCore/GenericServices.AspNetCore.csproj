@@ -34,7 +34,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EfCore.GenericBizRunner" Version="2.0.0" />
+    <PackageReference Include="EfCore.GenericBizRunner" Version="2.0.1" />
     <PackageReference Include="EfCore.GenericServices" Version="1.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>
