@@ -68,7 +68,7 @@ namespace ExampleWebApi
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 if (!File.Exists(xmlPath))
-                    throw new InvalidOperationException("The XML file does not exist for Swagger - See IXNetDevDocs/HowTo/SetupAppForSwagger.md for more info.");
+                    throw new InvalidOperationException("The XML file does not exist for Swagger - see link above for more info.");
                 c.IncludeXmlComments(xmlPath);
             });
         }
