@@ -1,37 +1,85 @@
 # EfCore.GenericServices.AspNetCore
 
 This library provides converters from [EfCore.GenericService](https://github.com/JonPSmith/EfCore.GenericServices)
-and [EfCore.GenericBizRunner](https://github.com/JonPSmith/EfCore.GenericBizRunner) status results to
-into two ASP.NET Core formats. 
+and [EfCore.GenericBizRunner](https://github.com/JonPSmith/EfCore.GenericBizRunner) status results to into two ASP.NET Core formats. 
 
+1. ASP.NET Core MVC or Razor pages - copy to `ModelState`.
+2. ASP.NET Core Web API - form correct HTTP response.
 
-1. `CopyErrorsToModelState` which convert `IStatusGeneric` errors into ASP.NET Core's `ModelState`.
+## 1. ASP.NET Core MVC or Razor pages - copy status to `ModelState`
+
+The extention method `CopyErrorsToModelState` which copy `IStatusGeneric` errors into ASP.NET Core's `ModelState`.
 Useful when working html/razor pages.
-2. `Response` which turns a `IStatusGeneric`, with optional result, into a Web API formatted return.
-   * HTTP 200 (OK) with a result and the status Message string
-   * HTTP 404 (Not found) if data was null
-   * HTTP 400 (Bad request) with errors in the same format as Web API uses.
 
-## `Response` formats
+There are two forms of the method `CopyErrorsToModelState` - they are:
 
-- Valid status, i.e. no errors:  HTTP 200 (OK) with json result with properly `message` containing the Message sent back by GenericServices/GenericBizRunner
-- Status has errors: HTTP 400 (Bad request) with errors in Web API format (see below)
-- Valid status, with result:
-   - Results is null: HTTP 404 (Not Found) with json result with properly `message` containing the Message sent back by GenericServices/GenericBizRunner
-   - Results is not null:   HTTP 200 (OK) with json result with properly `message` containing the Message, and `results` containing the results
+### 1a. `CopyErrorsToModelState` taking a dto
 
-### Web API error format
+In ASP.NET Core MVC or Razor pages you need to return errors vai the ModelState, which has the property name and the error for that property. However it is important to NOT have a named property that doesn't appear in the class shown on the display, otherwise the error doesn't appear.
 
-If using Web API in ASP.NET Core 2.1 or higher the default action is to validate the input to the action
-and return a HTTP 400 (Bad request) with the errors send as a dictionary format in json, with the name of 
-the property that had the error and an array of the error messages for that property.
-See example below:
+Because the Generic libraries can return errors with for properties not found in the display class there is a version of `CopyErrorsToModelState` that takes a parameter called `displayDto` and it will ensure the name is only set on properties that the `displayDto` has in it.
+
+### 1b. `CopyErrorsToModelState` without a dto
+
+If you want all the errors to have the property name left intact then there is another version that doesn't have a `displayDto` parameter.
+
+
+## 2. ASP.NET Core Web API - forming the correct HTTP response
+
+If you are using ASP.NET Core Web API you need the status codes of the Generic Libraries turned into the correct HTTP response. The `CreateResponse` static class contains a series of extension methods to do this for you. 
+
+*NOTE: See this [example Web API controller](#) for examples of using the `CreateResponse` extension methods.*
+
+There are the following versions for both the GenericService and GenericBizRunner libraries:
+
+- `IActionResult Response(this IStatusGeneric status)` - this returns the status without any results. 
+- `IActionResult ResponseWithValidCode(this IStatusGeneric status, int validStatusCode)` - this returns the status without any results, using the `validStatusCode` if the status has no errors.
+- `ActionResult<T> Response<T>(this IStatusGeneric status, T results)` - this returns the status with the results as a json object.
+- `ActionResult<T> ResponseWithValidCode<T>(this IStatusGeneric status, T results, int validStatusCode)` - this returns the status with the results as a json object, using the `validStatusCode` if the status has no errors.
+
+### Return formats
+
+#### 1. Success, no results
+The HTTP status code defaults to 200, but you can change this by using the `ResponseWithValidCode` version of the methods. The json sent looks like this:
+
+```json
+{
+  "message": "Successfully deleted a Todo Item"
+}
+```
+
+#### 2. Success, with results - result is not null
+The HTTP status code defaults to 200, but you can change this by using the `ResponseWithValidCode` version of the methods. The json sent looks like this:
+
+```json
+{
+  "message": "Success",
+  "results": {
+    "id": 1,
+    "name": "Create ASP.NET Core API project",
+    "difficulty": 1
+  }
+}
+```
+
+#### 3. Success, with results where the results is null
+The HTTP status code is 404 (NoFound). The json sent looks like this:
+
+```json
+{
+  "message": "The Todo Item was not found."
+}
+```
+
+#### 4. Error
+The HTTP status code is 400 (BadRequest). The json sent looks like this:
 
 ```json
 {
     "": [
         "Global error message"
-    ],
+    ],    
+    
     "MyPropery": [
         "The property is required",
         "Another error on the same property"
@@ -39,6 +87,6 @@ See example below:
 }
 ```
 
-The `Response` extension method uses that format to return `IStatusGeneric` so that you have a common error response format.
+*NOTE: This error format is the one that ASP.NET Core WebAPI when it is set up to validate data on input.*
 
 MIT licence
