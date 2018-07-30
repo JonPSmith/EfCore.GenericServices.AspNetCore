@@ -3,8 +3,8 @@
 This library provides converters from [EfCore.GenericService](https://github.com/JonPSmith/EfCore.GenericServices)
 and [EfCore.GenericBizRunner](https://github.com/JonPSmith/EfCore.GenericBizRunner) status results to into two ASP.NET Core formats. 
 
-1. ASP.NET Core MVC or Razor pages - copy to `ModelState`.
-2. ASP.NET Core Web API - form correct HTTP response.
+1. [ASP.NET Core MVC or Razor pages](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/README.md#1-aspnet-core-mvc-or-razor-pages---copy-status-to-modelstate) - copy to `ModelState`.
+2. [ASP.NET Core Web API](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/README.md#2-aspnet-core-web-api---forming-the-correct-http-response) - form correct HTTP response.
 
 ## 1. ASP.NET Core MVC or Razor pages - copy status to `ModelState`
 
@@ -28,7 +28,7 @@ If you want all the errors to have the property name left intact then there is a
 
 If you are using ASP.NET Core Web API you need the status codes of the Generic Libraries turned into the correct HTTP response. The `CreateResponse` static class contains a series of extension methods to do this for you. 
 
-*NOTE: See this [example Web API controller](#) for examples of using the `CreateResponse` extension methods.*
+*NOTE: See this [example Web API controller](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/ExampleWebApi/Controllers/ToDoController.cs) for examples of using the `CreateResponse` extension methods.*
 
 There are the following versions for both the GenericService and GenericBizRunner libraries:
 
