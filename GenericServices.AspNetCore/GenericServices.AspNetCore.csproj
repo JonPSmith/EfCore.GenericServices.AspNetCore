@@ -11,7 +11,7 @@
     <Authors>Jon P Smith</Authors>
     <Company>Selective Analytics</Company>
     <Product>EfCore.GenericServices</Product>
-    <Description>A support library to the EfCore.GenericServices library. It transfers IStatusGeneric errors into ASP.NET Core's ModelState</Description>
+    <Description>A support library to the EfCore.GenericServices and EfCore.GenericBizRunner libraries. It converts IStatusGeneric into ASP.NET Core's ModelState or Web API response</Description>
     <Copyright>Copyright (c) 2018 Jon P Smith</Copyright>
     <PackageLicenseUrl>https://github.com/JonPSmith/EfCore.GenericServices/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JonPSmith/EfCore.GenericServices</PackageProjectUrl>
