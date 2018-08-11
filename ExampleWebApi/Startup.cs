@@ -49,12 +49,14 @@ namespace ExampleWebApi
             connection.Open();  //see https://github.com/aspnet/EntityFramework/issues/6968
             services.AddDbContext<ExampleDbContext>(options => options.UseSqlite(connection));
 
+            //GenericServices configuration
             services.GenericServicesSimpleSetup<ExampleDbContext>(
                 new GenericServicesConfig
                 {
                     NoErrorOnReadSingleNull = true //When working with WebAPI you should set this flag. Responce then sends 404 on null result
-                },
-                Assembly.GetAssembly(typeof(ChangeNameDto)));
+                },Assembly.GetAssembly(typeof(ChangeNameDto)));
+
+            //GenericBizRunner configuration
             services.RegisterGenericBizRunnerBasic<ExampleDbContext>();
             services.AddAutoMapper(Assembly.GetAssembly(typeof (CreateTodoBizLogic)));
             services.AddTransient(typeof(ICreateTodoBizLogic), typeof(CreateTodoBizLogic));
