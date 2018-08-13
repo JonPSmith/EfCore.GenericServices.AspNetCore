@@ -9,7 +9,7 @@ namespace ExampleWebApi.Dtos
 {
     public class ChangeNameDto : ILinkToEntity<TodoItem>
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }

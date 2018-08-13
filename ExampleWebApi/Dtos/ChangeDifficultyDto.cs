@@ -9,7 +9,7 @@ namespace ExampleWebApi.Dtos
 {
     public class ChangeDifficultyDto : ILinkToEntity<TodoItem>
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// This represents the difficulty of setting it up: 1 = easy, 5 = hard
