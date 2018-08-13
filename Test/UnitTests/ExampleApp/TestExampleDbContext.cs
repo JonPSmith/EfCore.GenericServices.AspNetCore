@@ -13,7 +13,7 @@ namespace Test.UnitTests.ExampleApp
     public class TestExampleDbContext
     {
         [Fact]
-        public void TestCreateToDosOk()
+        public void TestSeedDatabaseOk()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExampleDbContext>();

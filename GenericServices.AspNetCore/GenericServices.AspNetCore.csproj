@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>1.2.1</PackageVersion>
-    <Version>1.2.1</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
+    <PackageVersion>2.0.0</PackageVersion>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <PackageId>EfCore.GenericServices.AspNetCore</PackageId>
     <Authors>Jon P Smith</Authors>
     <Company>Selective Analytics</Company>
@@ -19,8 +19,9 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Entity Framework Core, EfCore.GenericServices, ASP.NET Core</PackageTags>
     <PackageReleaseNotes>
-      - New feature: Added `ResponseWithValidCode` methods to allow the StatusCode to be set for the success path - useful for things like 'POST' where you might want to return a status code of 201 instead of 200
-      - Updated to newest versions of GenericServices and GenericBizRunner
+      - Breaking change: Now has specific typed class for Web API, so that it is easier to check
+      - New Feature: ????????????????????????
+      - New feature: Added second parameter to `ResponseWithValidCode` to allow the StatusCode for null return to be set - default is NoFound (HTTP 404)
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/EfCore.GenericServices/master/Images/EfCore-GenericServices-AspNetCoreNuGetIcon128.png</PackageIconUrl>
   </PropertyGroup>

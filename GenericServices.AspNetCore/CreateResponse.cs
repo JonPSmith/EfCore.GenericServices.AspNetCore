@@ -38,7 +38,7 @@ namespace GenericServices.AspNetCore
         public static IActionResult ResponseWithValidCode(this GenericServices.IStatusGeneric status, int validStatusCode)
         {
             if (status.IsValid)
-                return new ObjectResult(new { status.Message }) { StatusCode = validStatusCode };
+                return new ObjectResult(new WebApiMessageOnly(status)) { StatusCode = validStatusCode };
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
@@ -71,13 +71,14 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="results"></param>
         /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
+        /// <param name="nullResultStatusCode">Optional, default is 404: The status code to return if the there ar no errors, but the result is null</param>
         /// <returns></returns>
-        public static ActionResult<T> ResponseWithValidCode<T>(this GenericServices.IStatusGeneric status, T results, int validStatusCode)
+        public static ActionResult<T> ResponseWithValidCode<T>(this GenericServices.IStatusGeneric status, T results, 
+            int validStatusCode, int nullResultStatusCode = 404)
         {
             if (status.IsValid)
-                return results != null
-                    ? (ActionResult<T>)new ObjectResult(new { status.Message, results }) { StatusCode = validStatusCode }
-                    : (ActionResult<T>)new NotFoundObjectResult(new { status.Message });
+                return new ObjectResult(new WebApiMessageAndResult<T>( status, results ))
+                        { StatusCode = results == null ? nullResultStatusCode : validStatusCode };
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
@@ -108,7 +109,7 @@ namespace GenericServices.AspNetCore
         public static IActionResult ResponseWithValidCode(this GenericBizRunner.IStatusGeneric status, int validStatusCode)
         {
             if (!status.HasErrors)
-                return new ObjectResult(new { status.Message }) { StatusCode = validStatusCode };
+                return new ObjectResult(new WebApiMessageOnly(status)) { StatusCode = validStatusCode };
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors);
@@ -141,13 +142,14 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="results"></param>
         /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
+        /// <param name="nullResultStatusCode">Optional, default is 404: The status code to return if the there ar no errors, but the result is null</param>
         /// <returns></returns>
-        public static ActionResult<T> ResponseWithValidCode<T>(this GenericBizRunner.IStatusGeneric status, T results, int validStatusCode)
+        public static ActionResult<T> ResponseWithValidCode<T>(this GenericBizRunner.IStatusGeneric status, T results,
+            int validStatusCode, int nullResultStatusCode = 404)
         {
             if (!status.HasErrors)
-                return results != null
-                    ? (ActionResult<T>)new ObjectResult(new { status.Message, results }) { StatusCode = validStatusCode }
-                    : (ActionResult<T>)new NotFoundObjectResult(new { status.Message });
+                return new ObjectResult(new WebApiMessageAndResult<T>(status, results))
+                    { StatusCode = results == null ? nullResultStatusCode : validStatusCode };
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors);
