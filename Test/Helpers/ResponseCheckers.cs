@@ -44,17 +44,15 @@ namespace Test.Helpers
             actionResult.ShouldNotBeNull();
             if (status.IsValid)
             {
+                var result = actionResult.Result as ObjectResult;
+                result.ShouldNotBeNull();
                 if (results == null)
                 {
-                    var result = actionResult.Result as NotFoundObjectResult;
-                    result.ShouldNotBeNull();
                     result.StatusCode.ShouldEqual(404);
                     result.Value.ToString().ShouldEqual("{ Message = " + status.Message + " }");
                 }
                 else
                 {
-                    var result = actionResult.Result as ObjectResult;
-                    result.ShouldNotBeNull();
                     result.StatusCode.ShouldEqual(validStatusCode);
                     result.Value.ToString().ShouldEqual("{ Message = " + status.Message + ", results = " + results + " }");
                 }
@@ -95,19 +93,17 @@ namespace Test.Helpers
         public static void CheckResponseWithValidCode<T>(this ActionResult<T> actionResult, GenericBizRunner.IStatusGeneric status, T results, int validStatusCode)
         {
             actionResult.ShouldNotBeNull();
+            var result = actionResult.Result as ObjectResult;
+            result.ShouldNotBeNull();
             if (!status.HasErrors)
             {
                 if (results == null)
                 {
-                    var result = actionResult.Result as NotFoundObjectResult;
-                    result.ShouldNotBeNull();
                     result.StatusCode.ShouldEqual(404);
                     result.Value.ToString().ShouldEqual("{ Message = " + status.Message + " }");
                 }
                 else
                 {
-                    var result = actionResult.Result as ObjectResult;
-                    result.ShouldNotBeNull();
                     result.StatusCode.ShouldEqual(validStatusCode);
                     result.Value.ToString().ShouldEqual("{ Message = " + status.Message + ", results = " + results + " }");
                 }
