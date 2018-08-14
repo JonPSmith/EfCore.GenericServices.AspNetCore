@@ -156,7 +156,10 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.PutName(dto, service);
 
                 //VERIFY
-                response.CheckResponse(service);
+                response.GetStatusCode().ShouldEqual(200);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+                rStatus.Message.ShouldEqual("Successfully updated the Todo Item");
             }
         }
 
