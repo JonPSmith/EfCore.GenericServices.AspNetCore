@@ -106,5 +106,8 @@ that:
 2. Converts Web API responses that were created by the `CreateResponse` extension method into a  
 `GenericServices.IStatusGeneric` type. This allows you to inspect the Status, message, Errors and returned Result.
 
-Look at [IntegrationTestToDoController](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/Test/UnitTests/ExampleApp/IntegrationTestToDoController.cs)
-for an example of how the `ResponseDecoders` extension methods can help.
+I have added a [section to my article on Web API](https://www.thereformedprogrammer.net/how-to-write-good-testable-asp-net-core-web-api-code-quickly/?preview=true#update-now-with-unit-test-support)
+that talks about this feature in more detail. 
+Also do look at [IntegrationTestToDoController](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/Test/UnitTests/ExampleApp/IntegrationTestToDoController.cs)
+for an example of how the `ResponseDecoders` extension methods are used.
+

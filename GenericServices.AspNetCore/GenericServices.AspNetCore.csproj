@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>2.0.0-preview01</PackageVersion>
+    <PackageVersion>2.0.0</PackageVersion>
     <Version>2.0.0</Version>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
@@ -19,7 +19,7 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Entity Framework Core, EfCore.GenericServices, ASP.NET Core</PackageTags>
     <PackageReleaseNotes>
-      - Breaking change: Now has specific typed class for Web API, so that it is easier to check
+      - Breaking change: Now has specific typed class for Web API, so that it is easier to unit test
       - New Feature: Added ResponseDecoder to make testing easier of Web API action methods that uses the CreateResponse to return a result
       - New feature: Added second parameter to `ResponseWithValidCode` to allow the StatusCode for null return to be set - default is NoFound (HTTP 404)
     </PackageReleaseNotes>
