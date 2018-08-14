@@ -58,7 +58,7 @@ namespace GenericServices.AspNetCore.UnitTesting
             var objResult = (actionResult.Result as ObjectResult);
             if (objResult == null)
                 throw new NullReferenceException("Could not cast the response to ObjectResult");
-            var errorPart = objResult.Value as BadRequestObjectResult;
+            var errorPart = objResult as BadRequestObjectResult;
             if (errorPart != null)
             {
                 //It has errors, so copy errors to status
