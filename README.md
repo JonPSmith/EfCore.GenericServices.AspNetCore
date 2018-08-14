@@ -3,17 +3,17 @@
 This library provides converters from [EfCore.GenericService](https://github.com/JonPSmith/EfCore.GenericServices)
 and [EfCore.GenericBizRunner](https://github.com/JonPSmith/EfCore.GenericBizRunner) status results to into two ASP.NET Core formats. 
 
-1. [ASP.NET Core MVC or Razor pages](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/README.md#1-aspnet-core-mvc-or-razor-pages---copy-status-to-modelstate) - copy to `ModelState`.
-2. [ASP.NET Core Web API](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/README.md#2-aspnet-core-web-api---forming-the-correct-http-response) - form correct HTTP response.
+1. [ASP.NET Core MVC or Razor pages](#1-aspnet-core-mvc-or-razor-pages---copy-status-to-modelstate) - copy to `ModelState`.
+2. [ASP.NET Core Web API](#2-aspnet-core-web-api---forming-the-correct-http-response) - form correct HTTP response.
 
 The library also contains code for that user EfCore.GenericService or EfCore.GenericBizRunner. 
-See information at end of the Readme file 
+See information at [end of the Readme file](#unit-testintegration-test-of-web-apis).
 
-*NOTE: If you are interested in using then see the article
-[How to write good, testable ASP.NET Core Web API code quickly](https://www.thereformedprogrammer.net/how-to-write-good-testable-asp-net-core-web-api-code-quickly/)
+*NOTE: If you are interested in using EfCore.GenericService or EfCore.GenericBizRunner in Web APIs then see the article
+["How to write good, testable ASP.NET Core Web API code quickly"](https://www.thereformedprogrammer.net/how-to-write-good-testable-asp-net-core-web-api-code-quickly/)
 for more information.
 
-MIT licence
+MIT licence - available on [NuGet](https://www.nuget.org/packages/EfCore.GenericServices.AspNetCore/).
 
 ## 1. ASP.NET Core MVC or Razor pages - copy status to `ModelState`
 
@@ -102,7 +102,7 @@ The HTTP status code is 400 (BadRequest). The json sent looks like this:
 
 I have added some extension methods in the class [ResponseDecoders](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/GenericServices.AspNetCore/UnitTesting/ResponseDecoders.cs)
 that:
-1. Porvides you with the HTTP Status Code in the response
+1. Provides you with the HTTP Status Code in the response.
 2. Converts Web API responses that were created by the `CreateResponse` extension method into a  
 `GenericServices.IStatusGeneric` type. This allows you to inspect the Status, message, Errors and returned Result.
 
