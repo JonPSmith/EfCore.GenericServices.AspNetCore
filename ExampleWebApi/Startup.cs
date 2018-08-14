@@ -53,6 +53,8 @@ namespace ExampleWebApi
             services.GenericServicesSimpleSetup<ExampleDbContext>(
                 new GenericServicesConfig
                 {
+                    DtoAccessValidateOnSave = true,  //This causes validation to happen on create/update via DTOs
+                    DirectAccessValidateOnSave = true, //This causes validation to happen on direct create/update and delete
                     NoErrorOnReadSingleNull = true //When working with WebAPI you should set this flag. Responce then sends 404 on null result
                 },Assembly.GetAssembly(typeof(ChangeNameDto)));
 

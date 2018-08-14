@@ -2,12 +2,15 @@
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
 using System.Linq;
+using System.Runtime.InteropServices;
 using ExampleDatabase;
 using ExampleWebApi.BusinessLogic;
 using ExampleWebApi.Controllers;
 using ExampleWebApi.Dtos;
 using ExampleWebApi.Helpers;
 using GenericBizRunner;
+using GenericServices.AspNetCore.UnitTesting;
+using GenericServices.Configuration;
 using GenericServices.PublicButHidden;
 using GenericServices.Setup;
 using Test.Helpers;
@@ -19,6 +22,13 @@ namespace Test.UnitTests.ExampleApp
 {
     public class TestToDoController
     {
+        private IGenericServicesConfig _genericServiceConfig = new GenericServicesConfig
+        {
+            DtoAccessValidateOnSave = true, //This causes validation to happen on create/update via DTOs
+            DirectAccessValidateOnSave = true, //This causes validation to happen on direct create/update and delete
+            NoErrorOnReadSingleNull = true //When working with WebAPI you should set this flag. Responce then sends 404 on null result
+        };
+
         [Fact]
         public void TestGetManyOk()
         {
@@ -30,7 +40,7 @@ namespace Test.UnitTests.ExampleApp
                 context.SeedDatabase();
 
                 var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>();
+                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
@@ -41,10 +51,8 @@ namespace Test.UnitTests.ExampleApp
             }
         }
 
-        [Theory]
-        [InlineData(2, false)]
-        [InlineData(99, true)]
-        public void TestGetOneOk(int id, bool shouldBeNull)
+        [Fact]
+        public void TestGetOneOk()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
@@ -54,14 +62,42 @@ namespace Test.UnitTests.ExampleApp
                 context.SeedDatabase();
 
                 var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>();
+                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var response = controller.Get(id, service);
+                var response = controller.Get(1, service);
 
                 //VERIFY
-                response.CheckResponse(service, shouldBeNull ? null : context.TodoItems.Find(id));
+                response.GetStatusCode().ShouldEqual(200);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+                rStatus.Message.ShouldEqual("Success");
+            }
+        }
+
+        [Fact]
+        public void TestGetOneNullReturn()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
+            using (var context = new ExampleDbContext(options))
+            {
+                context.Database.EnsureCreated();
+                context.SeedDatabase();
+
+                var controller = new ToDoController();
+                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
+                var service = new CrudServices(context, utData.ConfigAndMapper);
+
+                //ATTEMPT
+                var response = controller.Get(99, service);
+
+                //VERIFY
+                response.GetStatusCode().ShouldEqual(404);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+                rStatus.Message.ShouldEqual("The Todo Item was not found.");
             }
         }
 
@@ -89,7 +125,11 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.Post(dto, service);
 
                 //VERIFY
-                response.CheckResponseWithValidCode(service.Status, context.TodoItems.OrderByDescending(x => x.Id).First(), 201);
+                response.GetStatusCode().ShouldEqual(201);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+                rStatus.Message.ShouldEqual("Successfully saved the todo item 'Test'.");
+                rStatus.Result.Id.ShouldNotEqual(0);
             }
         }
 
@@ -104,7 +144,7 @@ namespace Test.UnitTests.ExampleApp
                 context.SeedDatabase();
 
                 var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>();
+                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
@@ -131,7 +171,7 @@ namespace Test.UnitTests.ExampleApp
                 context.SeedDatabase();
 
                 var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>();
+                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
@@ -143,14 +183,15 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.PutDifficuty(dto, service);
 
                 //VERIFY
-                response.CheckResponse(service);
+                response.GetStatusCode().ShouldEqual(200);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+                rStatus.Message.ShouldEqual("Successfully updated the Todo Item");
             }
         }
 
-        [Theory]
-        [InlineData(1, false)]
-        [InlineData(99, true)]
-        public void TestDeleteOk(int id, bool errors)
+        [Fact]
+        public void TestPutDifficultyValidationError()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
@@ -160,16 +201,75 @@ namespace Test.UnitTests.ExampleApp
                 context.SeedDatabase();
 
                 var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>();
+                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var response = controller.Delete(id, service);
+                var dto = new ChangeDifficultyDto()
+                {
+                    Id = 1,
+                    Difficulty = 99,
+                };
+                var response = controller.PutDifficuty(dto, service);
 
                 //VERIFY
-                response.CheckResponse(service);
-                context.TodoItems.Count().ShouldEqual(errors ? 6 : 5);
+                response.GetStatusCode().ShouldEqual(400);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeFalse();
+                rStatus.GetAllErrors().ShouldEqual("The field Difficulty must be between 1 and 5.");
             }
         }
+
+        [Fact]
+        public void TestDeleteOK()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
+            using (var context = new ExampleDbContext(options))
+            {
+                context.Database.EnsureCreated();
+                context.SeedDatabase();
+
+                var controller = new ToDoController();
+                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
+                var service = new CrudServices(context, utData.ConfigAndMapper);
+
+                //ATTEMPT
+                var response = controller.Delete(2, service);
+
+                //VERIFY
+                response.GetStatusCode().ShouldEqual(200);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+                rStatus.Message.ShouldEqual("Successfully deleted a Todo Item");
+                context.TodoItems.Count().ShouldEqual(5);
+            }
+        }
+
+        [Fact]
+        public void TestDeleteNotFound()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
+            using (var context = new ExampleDbContext(options))
+            {
+                context.Database.EnsureCreated();
+                context.SeedDatabase();
+
+                var controller = new ToDoController();
+                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
+                var service = new CrudServices(context, utData.ConfigAndMapper);
+
+                //ATTEMPT
+                var response = controller.Delete(99, service);
+
+                //VERIFY
+                response.GetStatusCode().ShouldEqual(400);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeFalse();
+                rStatus.GetAllErrors().ShouldEqual("Sorry, I could not find the Todo Item you wanted to delete.");
+            }
+        }
+
     }
 }
