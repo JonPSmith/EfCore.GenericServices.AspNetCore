@@ -20,7 +20,7 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.ExampleApp
 {
-    public class TestToDoController
+    public class IntegrationTestToDoController
     {
         private IGenericServicesConfig _genericServiceConfig = new GenericServicesConfig
         {
