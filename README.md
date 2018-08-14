@@ -6,8 +6,12 @@ and [EfCore.GenericBizRunner](https://github.com/JonPSmith/EfCore.GenericBizRunn
 1. [ASP.NET Core MVC or Razor pages](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/README.md#1-aspnet-core-mvc-or-razor-pages---copy-status-to-modelstate) - copy to `ModelState`.
 2. [ASP.NET Core Web API](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/README.md#2-aspnet-core-web-api---forming-the-correct-http-response) - form correct HTTP response.
 
-The library also contains code for that user EfCore.GenericService or EfCore.GenericBizRunner. See information at end of the Readme file,
-and have a look at the integration test 
+The library also contains code for that user EfCore.GenericService or EfCore.GenericBizRunner. 
+See information at end of the Readme file 
+
+*NOTE: If you are interested in using then see the article
+[How to write good, testable ASP.NET Core Web API code quickly](https://www.thereformedprogrammer.net/how-to-write-good-testable-asp-net-core-web-api-code-quickly/)
+for more information.
 
 MIT licence
 
@@ -94,3 +98,13 @@ The HTTP status code is 400 (BadRequest). The json sent looks like this:
 
 *NOTE: This error format is the one that ASP.NET Core WebAPI when it is set up to validate data on input.*
 
+## Unit test/Integration test of Web APIs
+
+I have added some extension methods in the class [ResponseDecoders](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/GenericServices.AspNetCore/UnitTesting/ResponseDecoders.cs)
+that:
+1. Porvides you with the HTTP Status Code in the response
+2. Converts Web API responses that were created by the `CreateResponse` extension method into a  
+`GenericServices.IStatusGeneric` type. This allows you to inspect the Status, message, Errors and returned Result.
+
+Look at [IntegrationTestToDoController](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/Test/UnitTests/ExampleApp/IntegrationTestToDoController.cs)
+for an example of how the `ResponseDecoders` extension methods can help.
