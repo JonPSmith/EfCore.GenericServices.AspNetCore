@@ -6,6 +6,11 @@ and [EfCore.GenericBizRunner](https://github.com/JonPSmith/EfCore.GenericBizRunn
 1. [ASP.NET Core MVC or Razor pages](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/README.md#1-aspnet-core-mvc-or-razor-pages---copy-status-to-modelstate) - copy to `ModelState`.
 2. [ASP.NET Core Web API](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/README.md#2-aspnet-core-web-api---forming-the-correct-http-response) - form correct HTTP response.
 
+The library also contains code for that user EfCore.GenericService or EfCore.GenericBizRunner. See information at end of the Readme file,
+and have a look at the integration test 
+
+MIT licence
+
 ## 1. ASP.NET Core MVC or Razor pages - copy status to `ModelState`
 
 The extention method `CopyErrorsToModelState` which copy `IStatusGeneric` errors into ASP.NET Core's `ModelState`.
@@ -89,4 +94,3 @@ The HTTP status code is 400 (BadRequest). The json sent looks like this:
 
 *NOTE: This error format is the one that ASP.NET Core WebAPI when it is set up to validate data on input.*
 
-MIT licence
