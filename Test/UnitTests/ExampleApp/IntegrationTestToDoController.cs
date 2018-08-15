@@ -2,7 +2,7 @@
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using ExampleDatabase;
 using ExampleWebApi.BusinessLogic;
 using ExampleWebApi.Controllers;
@@ -22,7 +22,7 @@ namespace Test.UnitTests.ExampleApp
 {
     public class IntegrationTestToDoController
     {
-        private IGenericServicesConfig _genericServiceConfig = new GenericServicesConfig
+        private readonly IGenericServicesConfig _genericServiceConfig = new GenericServicesConfig
         {
             DtoAccessValidateOnSave = true, //This causes validation to happen on create/update via DTOs
             DirectAccessValidateOnSave = true, //This causes validation to happen on direct create/update and delete
@@ -30,7 +30,7 @@ namespace Test.UnitTests.ExampleApp
         };
 
         [Fact]
-        public void TestGetManyOk()
+        public async Task TestGetManyOk()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
@@ -44,10 +44,13 @@ namespace Test.UnitTests.ExampleApp
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var response = controller.Get(service);
+                var response = await controller.GetAsync(service);
 
                 //VERIFY
-                response.Value.Count().ShouldEqual(6);
+                response.GetStatusCode().ShouldEqual(200);
+                var rStatus = response.CopyToStatus();
+                rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+                rStatus.Result.Count.ShouldEqual(6);
             }
         }
 

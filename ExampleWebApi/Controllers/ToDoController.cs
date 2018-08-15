@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ExampleDatabase;
 using ExampleWebApi.BusinessLogic;
 using ExampleWebApi.Dtos;
@@ -7,6 +8,7 @@ using GenericBizRunner;
 using GenericServices;
 using GenericServices.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExampleWebApi.Controllers
 {
@@ -21,9 +23,9 @@ namespace ExampleWebApi.Controllers
         /// <returns></returns>
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<TodoItem>> Get([FromServices]ICrudServices service)
+        public async Task<ActionResult<List<TodoItem>>> GetAsync([FromServices]ICrudServices service)
         {
-            return service.ReadManyNoTracked<TodoItem>().ToList();
+            return service.Response(await service.ReadManyNoTracked<TodoItem>().ToListAsync());
         }
 
         /// <summary>
