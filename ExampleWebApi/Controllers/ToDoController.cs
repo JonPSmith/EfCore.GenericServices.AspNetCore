@@ -36,9 +36,9 @@ namespace ExampleWebApi.Controllers
         /// <returns></returns>
         // GET api/todo/5
         [HttpGet("{id}")]
-        public ActionResult<TodoItem> Get(int id, [FromServices]ICrudServices service)
+        public async Task<ActionResult<TodoItem>> Get(int id, [FromServices]ICrudServicesAsync service)
         {
-            return service.Response(service.ReadSingle<TodoItem>(id));
+            return service.Response(await service.ReadSingleAsync<TodoItem>(id));
         }
 
         // POST api/todo {name='name', difficulty=1}
