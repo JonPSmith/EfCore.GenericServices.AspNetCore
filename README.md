@@ -73,7 +73,8 @@ The HTTP status code defaults to 200, but you can change this by using the `Resp
 
 #### 3. Success, with results where the results is null
 The HTTP status code is 404 (NoFound), but you can change this by using the `ResponseWithValidCode` 
-version of the method and providing the third parameter, `nullResultStatusCode` with the new code. The json sent looks like this:
+version of the method and providing the third parameter, `nullResultStatusCode` with the new status code.
+The json sent looks like this:
 
 ```json
 {
