@@ -56,7 +56,7 @@ namespace Test.UnitTests.ExampleApp
         }
 
         [Fact]
-        public void TestGetOneOk()
+        public async Task TestGetOneOk()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
@@ -67,10 +67,10 @@ namespace Test.UnitTests.ExampleApp
 
                 var controller = new ToDoController();
                 var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
-                var service = new CrudServices(context, utData.ConfigAndMapper);
+                var service = new CrudServicesAsync(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var response = controller.Get(1, service);
+                var response = await controller.GetAsync(1, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
@@ -81,7 +81,7 @@ namespace Test.UnitTests.ExampleApp
         }
 
         [Fact]
-        public void TestGetOneNullReturn()
+        public async Task TestGetOneNullReturn()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
@@ -92,10 +92,10 @@ namespace Test.UnitTests.ExampleApp
 
                 var controller = new ToDoController();
                 var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
-                var service = new CrudServices(context, utData.ConfigAndMapper);
+                var service = new CrudServicesAsync(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var response = controller.Get(99, service);
+                var response = await controller.GetAsync(99, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.ResultIsNullStatusCode);
@@ -220,7 +220,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.PutDifficuty(dto, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(CreateResponse.ResultIsNullStatusCode);
+                response.GetStatusCode().ShouldEqual(CreateResponse.ErrorsStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeFalse();
                 rStatus.GetAllErrors().ShouldEqual("The field Difficulty must be between 1 and 5.");
@@ -271,7 +271,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.Delete(99, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(CreateResponse.ResultIsNullStatusCode);
+                response.GetStatusCode().ShouldEqual(CreateResponse.ErrorsStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeFalse();
                 rStatus.GetAllErrors().ShouldEqual("Sorry, I could not find the Todo Item you wanted to delete.");

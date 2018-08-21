@@ -24,7 +24,7 @@ namespace GenericServices.AspNetCore
         /// </summary>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static IActionResult Response(this GenericServices.IStatusGeneric status)
+        public static ActionResult<WebApiMessageOnly> Response(this GenericServices.IStatusGeneric status)
         {
             return status.ResponseWithValidCode(OkStatusCode);
         }
@@ -37,7 +37,7 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="validStatusCode">HTTP status code for non-error status</param>
         /// <returns></returns>
-        public static IActionResult ResponseWithValidCode(this GenericServices.IStatusGeneric status, int validStatusCode)
+        public static ActionResult<WebApiMessageOnly> ResponseWithValidCode(this GenericServices.IStatusGeneric status, int validStatusCode)
         {
             if (status.IsValid)
                 return new ObjectResult(new WebApiMessageOnly(status)) { StatusCode = validStatusCode };
@@ -57,7 +57,7 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="results"></param>
         /// <returns></returns>
-        public static ActionResult<T> Response<T>(this GenericServices.IStatusGeneric status, T results) 
+        public static ActionResult<WebApiMessageAndResult<T>> Response<T>(this GenericServices.IStatusGeneric status, T results) 
         {
             return status.ResponseWithValidCode(results, OkStatusCode);
         }
@@ -75,8 +75,8 @@ namespace GenericServices.AspNetCore
         /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
         /// <param name="nullResultStatusCode">Optional, default is 204: The status code to return if the there ar no errors, but the result is null</param>
         /// <returns></returns>
-        public static ActionResult<T> ResponseWithValidCode<T>(this GenericServices.IStatusGeneric status, T results, 
-            int validStatusCode, int nullResultStatusCode = ResultIsNull)
+        public static ActionResult<WebApiMessageAndResult<T>> ResponseWithValidCode<T>(this GenericServices.IStatusGeneric status, T results, 
+            int validStatusCode, int nullResultStatusCode = ResultIsNullStatusCode)
         {
             if (status.IsValid)
                 return new ObjectResult(new WebApiMessageAndResult<T>( status, results ))
@@ -95,7 +95,7 @@ namespace GenericServices.AspNetCore
         /// </summary>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static IActionResult Response(this GenericBizRunner.IStatusGeneric status)
+        public static ActionResult<WebApiMessageOnly> Response(this GenericBizRunner.IStatusGeneric status)
         {
             return status.ResponseWithValidCode(OkStatusCode);
         }
@@ -108,7 +108,7 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="validStatusCode">HTTP status code for non-error status</param>
         /// <returns></returns>
-        public static IActionResult ResponseWithValidCode(this GenericBizRunner.IStatusGeneric status, int validStatusCode)
+        public static ActionResult<WebApiMessageOnly> ResponseWithValidCode(this GenericBizRunner.IStatusGeneric status, int validStatusCode)
         {
             if (!status.HasErrors)
                 return new ObjectResult(new WebApiMessageOnly(status)) { StatusCode = validStatusCode };
@@ -128,7 +128,7 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="results"></param>
         /// <returns></returns>
-        public static ActionResult<T> Response<T>(this GenericBizRunner.IStatusGeneric status, T results)
+        public static ActionResult<WebApiMessageAndResult<T>> Response<T>(this GenericBizRunner.IStatusGeneric status, T results)
         {
             return status.ResponseWithValidCode(results, OkStatusCode);
         }
@@ -146,7 +146,7 @@ namespace GenericServices.AspNetCore
         /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
         /// <param name="nullResultStatusCode">Optional, default is 204: The status code to return if the there ar no errors, but the result is null</param>
         /// <returns></returns>
-        public static ActionResult<T> ResponseWithValidCode<T>(this GenericBizRunner.IStatusGeneric status, T results,
+        public static ActionResult<WebApiMessageAndResult<T>> ResponseWithValidCode<T>(this GenericBizRunner.IStatusGeneric status, T results,
             int validStatusCode, int nullResultStatusCode = ResultIsNullStatusCode)
         {
             if (!status.HasErrors)

@@ -15,7 +15,7 @@ namespace GenericServices.AspNetCore.UnitTesting
     public static class ResponseDecoders
     {
         /// <summary>
-        /// This extracts the status code from the IActionResult
+        /// This extracts the status code from the IActionResult - not used by CreateResponse, but left in as could be useful
         /// </summary>
         /// <param name="actionResult"></param>
         /// <returns>an int - throws exceptions if status is null</returns>
@@ -28,7 +28,7 @@ namespace GenericServices.AspNetCore.UnitTesting
         }
 
         /// <summary>
-        /// This extracts the status code from the ActionResult<T>
+        /// This extracts the status code from the ActionResult{T}
         /// </summary>
         /// <param name="actionResult"></param>
         /// <returns>an int - throws exceptions if status is null</returns>
@@ -41,14 +41,14 @@ namespace GenericServices.AspNetCore.UnitTesting
         }
 
         /// <summary>
-        /// This converts the IActionResult created by <see cref="CreateResponse"/> into a GenericServices.IStatusGeneric
+        /// This converts the <see cref="ActionResult{WebApiMessageOnly}"/> created by <see cref="CreateResponse"/> into a GenericServices.IStatusGeneric
         /// </summary>
         /// <param name="actionResult"></param>
         /// <returns>a status which is similar to the original status (errors might not be in the exact same form)</returns>
-        public static IStatusGeneric CopyToStatus(this IActionResult actionResult)
+        public static IStatusGeneric CopyToStatus(this ActionResult<WebApiMessageOnly> actionResult)
         {
             var testStatus = new StatusGenericHandler();
-            var objResult = (actionResult as ObjectResult);
+            var objResult = (actionResult.Result as ObjectResult);
             if (objResult == null)
                 throw new NullReferenceException("Could not cast the response to ObjectResult");
             var errorPart = objResult as BadRequestObjectResult;
@@ -58,20 +58,20 @@ namespace GenericServices.AspNetCore.UnitTesting
                 testStatus.AddValidationResults(ExtractErrors(errorPart));
                 return testStatus;
             }
-            var messagePart = objResult.Value as WebApiMessageOnly;
-            if (messagePart == null)
-                throw new NullReferenceException("Could not cast the response to WebApiMessageOnly");
-            testStatus.Message = messagePart.Message;
 
+            var decodedValue = objResult.Value as WebApiMessageOnly;
+            if (decodedValue == null)
+                throw new NullReferenceException($"Could not cast the response value to WebApiMessageOnly");
+            testStatus.Message = decodedValue.Message;
             return testStatus;
         }
 
         /// <summary>
-        /// This converts the ActionResult{T}; created by <see cref="CreateResponse"/> into a GenericServices.IStatusGeneric
+        /// This converts the <see cref="ActionResult{WebApiMessageAndResult{T}}"/> created by <see cref="CreateResponse"/> into a GenericServices.IStatusGeneric
         /// </summary>
         /// <param name="actionResult"></param>
         /// <returns>a status which is similar to the original status (errors might not be in the exact same form)</returns>
-        public static IStatusGeneric<T> CopyToStatus<T>(this ActionResult<T> actionResult)
+        public static IStatusGeneric<T> CopyToStatus<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult)
         {
             var testStatus = new StatusGenericHandler<T>();
             var objResult = (actionResult.Result as ObjectResult);
@@ -84,11 +84,12 @@ namespace GenericServices.AspNetCore.UnitTesting
                 testStatus.AddValidationResults(ExtractErrors(errorPart));
                 return testStatus;
             }
-            var messageAndResult = objResult.Value as WebApiMessageAndResult<T>;
-            if (messageAndResult == null)
-                throw new NullReferenceException("Could not cast the response to WebApiMessageAndResult<T>");
-            testStatus.Message = messageAndResult.Message;
-            testStatus.SetResult(messageAndResult.Results);
+
+            var decodedValue = objResult.Value as WebApiMessageAndResult<T>;
+            if (decodedValue == null)
+                throw new NullReferenceException($"Could not cast the response value to WebApiMessageAndResult<{typeof(T).Name}>");
+            testStatus.Message = decodedValue.Message;
+            testStatus.SetResult(decodedValue.Results);
 
             return testStatus;
         }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ExampleDatabase;
 using ExampleWebApi.BusinessLogic;
@@ -23,7 +22,7 @@ namespace ExampleWebApi.Controllers
         /// <returns></returns>
         // GET api/values
         [HttpGet]
-        public async Task<ActionResult<List<TodoItem>>> GetAsync([FromServices]ICrudServices service)
+        public async Task<ActionResult<WebApiMessageAndResult<List<TodoItem>>>> GetAsync([FromServices]ICrudServices service)
         {
             return service.Response(await service.ReadManyNoTracked<TodoItem>().ToListAsync());
         }
@@ -36,7 +35,7 @@ namespace ExampleWebApi.Controllers
         /// <returns></returns>
         // GET api/todo/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItem>> Get(int id, [FromServices]ICrudServicesAsync service)
+        public async Task<ActionResult<WebApiMessageAndResult<TodoItem>>> GetAsync(int id, [FromServices]ICrudServicesAsync service)
         {
             return service.Response(await service.ReadSingleAsync<TodoItem>(id));
         }
@@ -50,7 +49,7 @@ namespace ExampleWebApi.Controllers
         /// <param name="service"></param>
         /// <returns>If succuesful it returns a HTTP 201 with the created entity, including its primary key</returns>
         [HttpPost]
-        public ActionResult<TodoItem> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
+        public ActionResult<WebApiMessageAndResult<TodoItem>> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
         {
             return service.Status.ResponseWithValidCode(service.RunBizAction<TodoItem>(item), 201);
         }
@@ -64,7 +63,7 @@ namespace ExampleWebApi.Controllers
         /// <param name="service"></param>
         [Route("putname")]
         [HttpPut()]
-        public IActionResult PutName(ChangeNameDto dto, [FromServices]ICrudServices service)
+        public ActionResult<WebApiMessageOnly> PutName(ChangeNameDto dto, [FromServices]ICrudServices service)
         {
             service.UpdateAndSave(dto);
             return service.Response();
@@ -80,7 +79,7 @@ namespace ExampleWebApi.Controllers
         // PUT api/todo {id=1, difficulty=3}
         [Route("putdifficulty")]
         [HttpPut]
-        public IActionResult PutDifficuty(ChangeDifficultyDto dto, [FromServices]ICrudServices service)
+        public ActionResult<WebApiMessageOnly> PutDifficuty(ChangeDifficultyDto dto, [FromServices]ICrudServices service)
         {
             service.UpdateAndSave(dto);
             return service.Response();
@@ -94,7 +93,7 @@ namespace ExampleWebApi.Controllers
         /// <returns></returns>
         // DELETE api/todo/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id, [FromServices]ICrudServices service)
+        public ActionResult<WebApiMessageOnly> Delete(int id, [FromServices]ICrudServices service)
         {
             service.DeleteAndSave<TodoItem>(id);
             return service.Response();

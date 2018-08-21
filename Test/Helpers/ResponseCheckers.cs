@@ -13,18 +13,18 @@ namespace Test.Helpers
 {
     public static class ResponseCheckers
     {
-        public static void CheckResponse(this IActionResult actionResult, GenericServices.IStatusGeneric status)
+        public static void CheckResponse(this ActionResult<WebApiMessageOnly> actionResult, GenericServices.IStatusGeneric status)
         {
             actionResult.CheckResponseWithValidCode(status, CreateResponse.OkStatusCode);
         }
 
-        public static void CheckResponseWithValidCode(this IActionResult actionResult, GenericServices.IStatusGeneric status, int validStatusCode)
+        public static void CheckResponseWithValidCode(this ActionResult<WebApiMessageOnly> actionResult, GenericServices.IStatusGeneric status, int validStatusCode)
         {
             actionResult.ShouldNotBeNull();
+            var result = actionResult.Result as ObjectResult;
             if (status.IsValid)
             {
                 actionResult.ShouldNotBeNull();
-                var result = actionResult as ObjectResult;
                 Assert.NotNull(result);
                 result.StatusCode.ShouldEqual(validStatusCode);
                 var returnClass = result.Value as WebApiMessageOnly;
@@ -32,22 +32,22 @@ namespace Test.Helpers
             }
             else
             {
-                CheckErrorResponse(actionResult as BadRequestObjectResult, status.Errors.Select(x => x.ErrorResult));
+                CheckErrorResponse(result as BadRequestObjectResult, status.Errors.Select(x => x.ErrorResult));
             }
         }
 
-        public static void CheckResponse<T>(this ActionResult<T> actionResult, GenericServices.IStatusGeneric status, T results)
+        public static void CheckResponse<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, GenericServices.IStatusGeneric status, T results)
         {
             actionResult.CheckResponseWithValidCode<T>(status, results, CreateResponse.OkStatusCode);
         }
 
-        public static void CheckResponseWithValidCode<T>(this ActionResult<T> actionResult, GenericServices.IStatusGeneric status, T results, 
+        public static void CheckResponseWithValidCode<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, GenericServices.IStatusGeneric status, T results, 
             int validStatusCode, int nullResultStatusCode = CreateResponse.ResultIsNullStatusCode)
         {
             actionResult.ShouldNotBeNull();
+            var result = actionResult.Result as ObjectResult;
             if (status.IsValid)
             {
-                var result = actionResult.Result as ObjectResult;
                 result.ShouldNotBeNull();
                 result.StatusCode.ShouldEqual(results == null ? nullResultStatusCode : validStatusCode);
                 var returnClass = result.Value as WebApiMessageAndResult<T>;
@@ -56,26 +56,26 @@ namespace Test.Helpers
             }
             else
             {
-                CheckErrorResponse(actionResult.Result as ObjectResult, status.Errors.Select(x => x.ErrorResult));
+                CheckErrorResponse(result as BadRequestObjectResult, status.Errors.Select(x => x.ErrorResult));
             }
         }
 
         //----------------------------------------------------
         //Now the GenericBixRunner
 
-        public static void CheckResponse(this IActionResult actionResult, GenericBizRunner.IStatusGeneric status)
+        public static void CheckResponse(this ActionResult<WebApiMessageOnly> actionResult, GenericBizRunner.IStatusGeneric status)
         {
             actionResult.CheckResponseWithValidCode(status, CreateResponse.OkStatusCode);
         }
 
-        public static void CheckResponseWithValidCode(this IActionResult actionResult, GenericBizRunner.IStatusGeneric status, 
+        public static void CheckResponseWithValidCode(this ActionResult<WebApiMessageOnly> actionResult, GenericBizRunner.IStatusGeneric status, 
             int validStatusCode)
         {
             actionResult.ShouldNotBeNull();
+            var result = actionResult.Result as ObjectResult;
             if (!status.HasErrors)
             {
                 actionResult.ShouldNotBeNull();
-                var result = actionResult as ObjectResult;
                 Assert.NotNull(result);
                 result.StatusCode.ShouldEqual(validStatusCode);
                 var returnClass = result.Value as WebApiMessageOnly;
@@ -83,22 +83,22 @@ namespace Test.Helpers
             }
             else
             {
-                CheckErrorResponse(actionResult as BadRequestObjectResult, status.Errors);
+                CheckErrorResponse(result as BadRequestObjectResult, status.Errors);
             }
         }
 
-        public static void CheckResponse<T>(this ActionResult<T> actionResult, GenericBizRunner.IStatusGeneric status, T results)
+        public static void CheckResponse<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, GenericBizRunner.IStatusGeneric status, T results)
         {
             actionResult.CheckResponseWithValidCode<T>(status, results, CreateResponse.OkStatusCode);
         }
 
-        public static void CheckResponseWithValidCode<T>(this ActionResult<T> actionResult, GenericBizRunner.IStatusGeneric status, T results, 
+        public static void CheckResponseWithValidCode<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, GenericBizRunner.IStatusGeneric status, T results, 
             int validStatusCode, int nullResultStatusCode = CreateResponse.ResultIsNullStatusCode)
         {
             actionResult.ShouldNotBeNull();
+            var result = actionResult.Result as ObjectResult;
             if (!status.HasErrors)
             {
-                var result = actionResult.Result as ObjectResult;
                 Assert.NotNull(result);
                 result.ShouldNotBeNull();
                 result.StatusCode.ShouldEqual(results == null ? nullResultStatusCode : validStatusCode);
@@ -107,7 +107,7 @@ namespace Test.Helpers
             }
             else
             {
-                CheckErrorResponse(actionResult.Result as ObjectResult, status.Errors);
+                CheckErrorResponse(result as BadRequestObjectResult, status.Errors);
             }
         }
 
@@ -117,7 +117,7 @@ namespace Test.Helpers
         private static void CheckErrorResponse(ObjectResult result, IEnumerable<ValidationResult> validationResults)
         {
             Assert.NotNull(result);
-            result.StatusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
+            result.StatusCode.ShouldEqual(CreateResponse.ErrorsStatusCode);
             var expectedDict = FormExpectedErrorResponse(validationResults);
             var dict = (Dictionary<string, object>)result.Value;
             dict.Count.ShouldEqual(expectedDict.Keys.Count);

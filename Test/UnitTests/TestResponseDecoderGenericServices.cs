@@ -58,7 +58,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
+            statusCode.ShouldEqual(CreateResponse.ErrorsStatusCode);
             rStatus.IsValid.ShouldBeFalse();
             rStatus.Errors.Count.ShouldEqual(1);
             rStatus.Errors.Single().ErrorResult.ErrorMessage.ShouldEqual("An Error");
@@ -79,7 +79,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
+            statusCode.ShouldEqual(CreateResponse.ErrorsStatusCode);
             rStatus.IsValid.ShouldBeFalse();
             rStatus.Errors.Count.ShouldEqual(2);
             rStatus.Errors[0].ErrorResult.ErrorMessage.ShouldEqual("An Error");
@@ -190,7 +190,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
+            statusCode.ShouldEqual(CreateResponse.ErrorsStatusCode);
             rStatus.IsValid.ShouldBeFalse();
             rStatus.Errors.Count.ShouldEqual(1);
             rStatus.Errors.Single().ErrorResult.ErrorMessage.ShouldEqual("Bad");
@@ -210,7 +210,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
+            statusCode.ShouldEqual(CreateResponse.ErrorsStatusCode);
             rStatus.IsValid.ShouldBeFalse();
             rStatus.Errors.Count.ShouldEqual(1);
             rStatus.Errors.Single().ErrorResult.ErrorMessage.ShouldEqual("Bad");
