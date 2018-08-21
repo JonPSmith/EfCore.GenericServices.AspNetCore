@@ -15,19 +15,6 @@ namespace GenericServices.AspNetCore.UnitTesting
     public static class ResponseDecoders
     {
         /// <summary>
-        /// This extracts the status code from the IActionResult - not used by CreateResponse, but left in as could be useful
-        /// </summary>
-        /// <param name="actionResult"></param>
-        /// <returns>an int - throws exceptions if status is null</returns>
-        public static int GetStatusCode(this IActionResult actionResult)
-        {
-            var objResult = (actionResult as ObjectResult);
-            if (objResult == null)
-                throw new NullReferenceException("Could not cast the response to ObjectResult");
-            return objResult.StatusCode ?? throw new NullReferenceException("Status Code as null");
-        }
-
-        /// <summary>
         /// This extracts the status code from the ActionResult{T}
         /// </summary>
         /// <param name="actionResult"></param>
