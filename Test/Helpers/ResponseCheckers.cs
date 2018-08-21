@@ -15,7 +15,7 @@ namespace Test.Helpers
     {
         public static void CheckResponse(this IActionResult actionResult, GenericServices.IStatusGeneric status)
         {
-            actionResult.CheckResponseWithValidCode(status, 200);
+            actionResult.CheckResponseWithValidCode(status, CreateResponse.OkStatusCode);
         }
 
         public static void CheckResponseWithValidCode(this IActionResult actionResult, GenericServices.IStatusGeneric status, int validStatusCode)
@@ -38,11 +38,11 @@ namespace Test.Helpers
 
         public static void CheckResponse<T>(this ActionResult<T> actionResult, GenericServices.IStatusGeneric status, T results)
         {
-            actionResult.CheckResponseWithValidCode<T>(status, results, 200);
+            actionResult.CheckResponseWithValidCode<T>(status, results, CreateResponse.OkStatusCode);
         }
 
         public static void CheckResponseWithValidCode<T>(this ActionResult<T> actionResult, GenericServices.IStatusGeneric status, T results, 
-            int validStatusCode, int nullResultStatusCode = 404)
+            int validStatusCode, int nullResultStatusCode = CreateResponse.ResultIsNullStatusCode)
         {
             actionResult.ShouldNotBeNull();
             if (status.IsValid)
@@ -65,7 +65,7 @@ namespace Test.Helpers
 
         public static void CheckResponse(this IActionResult actionResult, GenericBizRunner.IStatusGeneric status)
         {
-            actionResult.CheckResponseWithValidCode(status, 200);
+            actionResult.CheckResponseWithValidCode(status, CreateResponse.OkStatusCode);
         }
 
         public static void CheckResponseWithValidCode(this IActionResult actionResult, GenericBizRunner.IStatusGeneric status, 
@@ -89,11 +89,11 @@ namespace Test.Helpers
 
         public static void CheckResponse<T>(this ActionResult<T> actionResult, GenericBizRunner.IStatusGeneric status, T results)
         {
-            actionResult.CheckResponseWithValidCode<T>(status, results, 200);
+            actionResult.CheckResponseWithValidCode<T>(status, results, CreateResponse.OkStatusCode);
         }
 
         public static void CheckResponseWithValidCode<T>(this ActionResult<T> actionResult, GenericBizRunner.IStatusGeneric status, T results, 
-            int validStatusCode, int nullResultStatusCode = 404)
+            int validStatusCode, int nullResultStatusCode = CreateResponse.ResultIsNullStatusCode)
         {
             actionResult.ShouldNotBeNull();
             if (!status.HasErrors)
@@ -117,7 +117,7 @@ namespace Test.Helpers
         private static void CheckErrorResponse(ObjectResult result, IEnumerable<ValidationResult> validationResults)
         {
             Assert.NotNull(result);
-            result.StatusCode.ShouldEqual(400);
+            result.StatusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
             var expectedDict = FormExpectedErrorResponse(validationResults);
             var dict = (Dictionary<string, object>)result.Value;
             dict.Count.ShouldEqual(expectedDict.Keys.Count);

@@ -14,7 +14,9 @@ namespace GenericServices.AspNetCore
     /// </summary>
     public static class CreateResponse
     {
-        private const int OkStatusCode = 200;
+        public const int OkStatusCode = 200;
+        public const int ResultIsNullStatusCode = 204;
+        public const int ErrorsStatusCode = 400;
 
         /// <summary>
         /// This will return a HTTP 200 with the status message if Valid,
@@ -48,7 +50,7 @@ namespace GenericServices.AspNetCore
         /// This will return a result value, with the status Message
         /// 1. If there are no errors and the results is not null it will return a HTTP 200 response
         ///    plus a json containing the message from the status and the results object
-        /// 2. If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
+        /// 2. If there are no errors but result is  null it will return a HTTP 204 (NoContent) with the status Message
         /// 3. If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -64,17 +66,17 @@ namespace GenericServices.AspNetCore
         /// This will return a result value, with the status Message
         /// 1. If there are no errors and the result is not null it will return a HTTP response with the status code provided
         ///    in the validStatusCode property, plus a json containing the message from the status and the results object
-        /// 2. If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
+        /// 2. If there are no errors but result is  null it will return a HTTP 204 (NoContent) with the status Message
         /// 3. If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="status"></param>
         /// <param name="results"></param>
         /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
-        /// <param name="nullResultStatusCode">Optional, default is 404: The status code to return if the there ar no errors, but the result is null</param>
+        /// <param name="nullResultStatusCode">Optional, default is 204: The status code to return if the there ar no errors, but the result is null</param>
         /// <returns></returns>
         public static ActionResult<T> ResponseWithValidCode<T>(this GenericServices.IStatusGeneric status, T results, 
-            int validStatusCode, int nullResultStatusCode = 404)
+            int validStatusCode, int nullResultStatusCode = ResultIsNull)
         {
             if (status.IsValid)
                 return new ObjectResult(new WebApiMessageAndResult<T>( status, results ))
@@ -119,7 +121,7 @@ namespace GenericServices.AspNetCore
         /// This will return a result value, with the status Message
         /// 1. If there are no errors and the result is not null it will return a HTTP 200 response
         ///    plus a json containing the message from the status and the results object
-        /// 2. If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
+        /// 2. If there are no errors but result is  null it will return a HTTP 204 (NoContent) with the status Message
         /// 3. If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -135,17 +137,17 @@ namespace GenericServices.AspNetCore
         /// This will return a result value, with the status Message
         /// 1. If there are no errors and the result is not null it will return a HTTP response with the status code provided
         ///    in the validStatusCode property, plus a json containing the message from the status and the results object
-        /// 2. If there are no errors but result is  null it will return a HTTP 404 (NotFound) with the status Message
+        /// 2. If there are no errors but result is  null it will return a HTTP 204 (NoContent) with the status Message
         /// 3. If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="status"></param>
         /// <param name="results"></param>
         /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
-        /// <param name="nullResultStatusCode">Optional, default is 404: The status code to return if the there ar no errors, but the result is null</param>
+        /// <param name="nullResultStatusCode">Optional, default is 204: The status code to return if the there ar no errors, but the result is null</param>
         /// <returns></returns>
         public static ActionResult<T> ResponseWithValidCode<T>(this GenericBizRunner.IStatusGeneric status, T results,
-            int validStatusCode, int nullResultStatusCode = 404)
+            int validStatusCode, int nullResultStatusCode = ResultIsNullStatusCode)
         {
             if (!status.HasErrors)
                 return new ObjectResult(new WebApiMessageAndResult<T>(status, results))

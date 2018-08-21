@@ -25,7 +25,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(200);
+            statusCode.ShouldEqual(CreateResponse.OkStatusCode);
             rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
             rStatus.Message.ShouldEqual("Success");
         }
@@ -58,7 +58,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(400);
+            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
             rStatus.IsValid.ShouldBeFalse();
             rStatus.Errors.Count.ShouldEqual(1);
             rStatus.Errors.Single().ErrorResult.ErrorMessage.ShouldEqual("An Error");
@@ -79,7 +79,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(400);
+            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
             rStatus.IsValid.ShouldBeFalse();
             rStatus.Errors.Count.ShouldEqual(2);
             rStatus.Errors[0].ErrorResult.ErrorMessage.ShouldEqual("An Error");
@@ -103,7 +103,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(200);
+            statusCode.ShouldEqual(CreateResponse.OkStatusCode);
             rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
             rStatus.Message.ShouldEqual("Success");
             rStatus.Result.ShouldEqual(1);
@@ -138,7 +138,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(200);
+            statusCode.ShouldEqual(CreateResponse.OkStatusCode);
             rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
             rStatus.Result.ShouldEqual("Hello");
         }
@@ -155,7 +155,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(404);
+            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
             rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
             rStatus.Result.ShouldEqual(null);
         }
@@ -165,7 +165,7 @@ namespace Test.UnitTests
         {
             //SETUP
             var status = new StatusGenericHandler();
-            var actionResult = status.ResponseWithValidCode<string>(null, 200, 204);
+            var actionResult = status.ResponseWithValidCode<string>(null, CreateResponse.OkStatusCode, 204);
 
             //ATTEMPT
             var statusCode = actionResult.GetStatusCode();
@@ -190,7 +190,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(400);
+            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
             rStatus.IsValid.ShouldBeFalse();
             rStatus.Errors.Count.ShouldEqual(1);
             rStatus.Errors.Single().ErrorResult.ErrorMessage.ShouldEqual("Bad");
@@ -210,7 +210,7 @@ namespace Test.UnitTests
             var rStatus = actionResult.CopyToStatus();
 
             //VERIFY
-            statusCode.ShouldEqual(400);
+            statusCode.ShouldEqual(CreateResponse.ResultIsNullStatusCode);
             rStatus.IsValid.ShouldBeFalse();
             rStatus.Errors.Count.ShouldEqual(1);
             rStatus.Errors.Single().ErrorResult.ErrorMessage.ShouldEqual("Bad");

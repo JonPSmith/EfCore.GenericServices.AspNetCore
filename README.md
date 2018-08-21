@@ -44,7 +44,7 @@ There are the following versions for both the GenericService and GenericBizRunne
 - `IActionResult Response(this IStatusGeneric status)` - this returns the status without any results. 
 - `IActionResult ResponseWithValidCode(this IStatusGeneric status, int validStatusCode)` - this returns the status without any results, using the `validStatusCode` if the status has no errors.
 - `ActionResult<T> Response<T>(this IStatusGeneric status, T results)` - this returns the status with the results as a json object.
-- `ActionResult<T> ResponseWithValidCode<T>(this IStatusGeneric status, T results, int validStatusCode, int nullResultStatusCode = 404)` - this returns the status with the results as a json object, using the `validStatusCode` if the status has no errors and the result isn't null, or if the result is null it returns the `nullResultStatusCode`, which defaults to 404.
+- `ActionResult<T> ResponseWithValidCode<T>(this IStatusGeneric status, T results, int validStatusCode, int nullResultStatusCode = 204)` - this returns the status with the results as a json object, using the `validStatusCode` if the status has no errors and the result isn't null, or if the result is null it returns the `nullResultStatusCode`, which defaults to 204.
 
 ### Return formats
 
@@ -72,7 +72,7 @@ The HTTP status code defaults to 200, but you can change this by using the `Resp
 ```
 
 #### 3. Success, with results where the results is null
-The HTTP status code is 404 (NoFound), but you can change this by using the `ResponseWithValidCode` 
+The HTTP status code is 204 (NoContent), but you can change this by using the `ResponseWithValidCode` 
 version of the method and providing the third parameter, `nullResultStatusCode` with the new status code.
 The json sent looks like this:
 

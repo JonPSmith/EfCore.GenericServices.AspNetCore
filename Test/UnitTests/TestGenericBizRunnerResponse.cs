@@ -144,7 +144,7 @@ namespace Test.UnitTests
             var status = new StatusGenericHandler();
 
             //ATTEMPT
-            var actionResult = status.ResponseWithValidCode<string>(null, 200);
+            var actionResult = status.ResponseWithValidCode<string>(null, CreateResponse.OkStatusCode);
 
             //VERIFY
             actionResult.CheckResponse(status, null);

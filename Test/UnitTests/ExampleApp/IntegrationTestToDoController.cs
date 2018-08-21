@@ -9,6 +9,7 @@ using ExampleWebApi.Controllers;
 using ExampleWebApi.Dtos;
 using ExampleWebApi.Helpers;
 using GenericBizRunner;
+using GenericServices.AspNetCore;
 using GenericServices.AspNetCore.UnitTesting;
 using GenericServices.Configuration;
 using GenericServices.PublicButHidden;
@@ -47,7 +48,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = await controller.GetAsync(service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(200);
+                response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Result.Count.ShouldEqual(6);
@@ -72,7 +73,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.Get(1, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(200);
+                response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Message.ShouldEqual("Success");
@@ -97,7 +98,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.Get(99, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(404);
+                response.GetStatusCode().ShouldEqual(CreateResponse.ResultIsNullStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Message.ShouldEqual("The Todo Item was not found.");
@@ -159,7 +160,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.PutName(dto, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(200);
+                response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Message.ShouldEqual("Successfully updated the Todo Item");
@@ -189,7 +190,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.PutDifficuty(dto, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(200);
+                response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Message.ShouldEqual("Successfully updated the Todo Item");
@@ -219,7 +220,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.PutDifficuty(dto, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(400);
+                response.GetStatusCode().ShouldEqual(CreateResponse.ResultIsNullStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeFalse();
                 rStatus.GetAllErrors().ShouldEqual("The field Difficulty must be between 1 and 5.");
@@ -244,7 +245,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.Delete(2, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(200);
+                response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Message.ShouldEqual("Successfully deleted a Todo Item");
@@ -270,7 +271,7 @@ namespace Test.UnitTests.ExampleApp
                 var response = controller.Delete(99, service);
 
                 //VERIFY
-                response.GetStatusCode().ShouldEqual(400);
+                response.GetStatusCode().ShouldEqual(CreateResponse.ResultIsNullStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeFalse();
                 rStatus.GetAllErrors().ShouldEqual("Sorry, I could not find the Todo Item you wanted to delete.");

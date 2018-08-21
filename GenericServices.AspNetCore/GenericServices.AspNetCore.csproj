@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>2.0.0</PackageVersion>
-    <Version>2.0.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <PackageVersion>3.0.0-preview01</PackageVersion>
+    <Version>3.0.0</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
     <PackageId>EfCore.GenericServices.AspNetCore</PackageId>
     <Authors>Jon P Smith</Authors>
     <Company>Selective Analytics</Company>
@@ -19,9 +19,8 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Entity Framework Core, EfCore.GenericServices, ASP.NET Core</PackageTags>
     <PackageReleaseNotes>
-      - Breaking change: Now has specific typed class for Web API, so that it is easier to unit test
-      - New Feature: Added ResponseDecoder to make testing easier of Web API action methods that uses the CreateResponse to return a result
-      - New feature: Added second parameter to `ResponseWithValidCode` to allow the StatusCode for null return to be set - default is NoFound (HTTP 404)
+      - Breaking change: Changed the returned ActionResult{T} type to fully define the return - makes swagger definition correct
+      - Breaking change: Now returns 204 on null result to be in line with common practices (was 404)
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/EfCore.GenericServices/master/Images/EfCore-GenericServices-AspNetCoreNuGetIcon128.png</PackageIconUrl>
   </PropertyGroup>
