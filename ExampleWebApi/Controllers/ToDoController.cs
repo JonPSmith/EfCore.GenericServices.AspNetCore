@@ -34,7 +34,7 @@ namespace ExampleWebApi.Controllers
         /// <param name="service"></param>
         /// <returns></returns>
         // GET api/todo/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name= "Get")]
         public async Task<ActionResult<WebApiMessageAndResult<TodoItem>>> GetAsync(int id, [FromServices]ICrudServicesAsync service)
         {
             return service.Response(await service.ReadSingleAsync<TodoItem>(id));
@@ -47,11 +47,18 @@ namespace ExampleWebApi.Controllers
         /// </summary>
         /// <param name="item"></param>
         /// <param name="service"></param>
-        /// <returns>If succuesful it returns a HTTP 201 with the created entity, including its primary key</returns>
+        /// <returns>If successful it returns a CreatedAtRoute response - see
+        /// https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-2.1#implement-the-other-crud-operations
+        /// </returns>
+        [ProducesResponseType(typeof (CreateTodoDto), 201)]
         [HttpPost]
-        public ActionResult<WebApiMessageAndResult<TodoItem>> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
+        public ActionResult<CreateTodoDto> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
         {
-            return service.Status.ResponseWithValidCode(service.RunBizAction<TodoItem>(item), 201);
+            var result = service.RunBizAction<TodoItem>(item);
+            //NOTE: to get this to work you must:
+            //Set the name of the HttpGet, e.g. [HttpGet("{id}", Name= "Get")], and then use the Name value in the CreatedAtRoute
+            //see https://stackoverflow.com/questions/36560239/asp-net-core-createdatroute-failure for more on this
+            return service.Status.Response(this, "Get", new { id = result.Id },  item);
         }
 
         // PUT api/todo {id=1, name='NewName'}

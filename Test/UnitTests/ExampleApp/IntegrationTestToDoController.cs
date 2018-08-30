@@ -130,10 +130,9 @@ namespace Test.UnitTests.ExampleApp
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(201);
-                var rStatus = response.CopyToStatus();
+                var rStatus = response.CheckCreateResponse("Get", new {id = 7}, dto);
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
-                rStatus.Message.ShouldEqual("Successfully saved the todo item 'Test'.");
-                rStatus.Result.Id.ShouldNotEqual(0);
+                rStatus.Message.ShouldEqual("Success");
             }
         }
 

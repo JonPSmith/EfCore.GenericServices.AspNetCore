@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 
 namespace GenericServices.AspNetCore.UnitTesting
 {
@@ -54,6 +56,41 @@ namespace GenericServices.AspNetCore.UnitTesting
         }
 
         /// <summary>
+        /// This converts the <see cref="ActionResult{T}"/> used in a create action into a GenericServices.IStatusGeneric
+        /// </summary>
+        /// <param name="actionResult"></param>
+        /// <param name="routeName"></param>
+        /// <param name="routeValues"></param>
+        /// <param name="dto"></param>
+        /// <returns>a status which is similar to the original status (errors might not be in the exact same form)</returns>
+        public static IStatusGeneric CheckCreateResponse<T>(this ActionResult<T> actionResult, string routeName, object routeValues, T dto)
+            where T : class
+        {
+            var testStatus = new StatusGenericHandler();
+            var objResult = (actionResult.Result as ObjectResult);
+            if (objResult == null)
+                throw new NullReferenceException("Could not cast the response to ObjectResult");
+            var errorPart = objResult as BadRequestObjectResult;
+            if (errorPart != null)
+            {
+                var errors = ExtractErrors(errorPart);
+                testStatus.Message = $"There were {errors.Count()} errors in this call";
+                return testStatus;
+            }
+
+            var createdAtRouteResult = objResult as CreatedAtRouteResult;
+            if (createdAtRouteResult == null)
+                throw new NullReferenceException($"Could not cast the response value to CreatedAtRouteResult");
+            if (createdAtRouteResult.RouteName != routeName)
+                testStatus.AddError($"RouteName: expected {routeName}, found: {createdAtRouteResult.RouteName}");
+            if (createdAtRouteResult.Value as T != dto)
+                testStatus.AddError($"DTO: the returned DTO instance does not match the test DTO: expected {typeof(T).Name}, found: {createdAtRouteResult.Value.GetType().Name}");
+            testStatus.CombineStatuses(CompareRouteValues(createdAtRouteResult.RouteValues, routeValues));
+
+            return testStatus;
+        }
+
+        /// <summary>
         /// This converts the <see cref="ActionResult{WebApiMessageAndResult{T}}"/> created by <see cref="CreateResponse"/> into a GenericServices.IStatusGeneric
         /// </summary>
         /// <param name="actionResult"></param>
@@ -83,6 +120,31 @@ namespace GenericServices.AspNetCore.UnitTesting
 
         //----------------------------------------------------
         //private
+
+        private static IStatusGeneric CompareRouteValues(RouteValueDictionary foundValueRouteValues, object expectedRouteValues)
+        {
+            var expectedRouteValueDict = expectedRouteValues.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Select(x => new {key = x.Name, value = x.GetValue(expectedRouteValues)})
+                .ToDictionary(x => x.key, y => y.value);
+
+            var status = new StatusGenericHandler();
+            if (string.Join(", ", expectedRouteValueDict.Keys) != string.Join(", ", foundValueRouteValues.Keys) )
+                return status.AddError(
+                    $"RouteValues: Different named properties: expected = {string.Join(",", expectedRouteValueDict.Keys)}, found = {string.Join(", ", foundValueRouteValues.Keys)}");
+            foreach (var propName in expectedRouteValueDict.Keys)
+            {
+                var expectedValue = expectedRouteValueDict[propName];
+                var foundValue = foundValueRouteValues[propName];
+                if (expectedValue.GetType() != foundValue.GetType())
+                    status.AddError(
+                        $"RouteValues->{propName}, different type: expected = {expectedValue.GetType().Name}, found = {foundValue.GetType().Name}");
+                else if (!Equals(expectedValue, foundValue))
+                    status.AddError(
+                        $"RouteValues->{propName}, different values: expected = {expectedValue}, found = {foundValue}");
+            }
+
+            return status;
+        }
 
         private static IEnumerable<ValidationResult> ExtractErrors(BadRequestObjectResult result)
         {

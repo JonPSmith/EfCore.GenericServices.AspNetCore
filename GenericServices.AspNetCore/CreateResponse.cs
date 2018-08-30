@@ -15,6 +15,7 @@ namespace GenericServices.AspNetCore
     public static class CreateResponse
     {
         public const int OkStatusCode = 200;
+        public const int CreatedStatusCode = 201;
         public const int ResultIsNullStatusCode = 204;
         public const int ErrorsStatusCode = 400;
 
@@ -41,6 +42,40 @@ namespace GenericServices.AspNetCore
         {
             if (status.IsValid)
                 return new ObjectResult(new WebApiMessageOnly(status)) { StatusCode = validStatusCode };
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
+        }
+
+        /// <summary>
+        /// This allows you to return a CreatedAtRoute result for a Create
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="createdRoute"></param>
+        /// <returns></returns>
+        public static IActionResult Response(this GenericServices.IStatusGeneric status, CreatedAtRouteResult createdRoute)
+        {
+            if (status.IsValid)
+                return createdRoute;
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
+        }
+
+        /// <summary>
+        /// This allows you to return a CreatedAtRoute result for a Create
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="controller"></param>
+        /// <param name="routeName">The values needed to work with the HttpGet to return the correct item</param>
+        /// <param name="routeValues"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public static ActionResult<T> Response<T>(this GenericServices.IStatusGeneric status,
+            ControllerBase controller, string routeName, object routeValues, T dto)
+        {
+            if (status.IsValid)
+                return controller.CreatedAtRoute(routeName, routeValues, dto);
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
@@ -112,6 +147,25 @@ namespace GenericServices.AspNetCore
         {
             if (!status.HasErrors)
                 return new ObjectResult(new WebApiMessageOnly(status)) { StatusCode = validStatusCode };
+
+            //it has errors
+            return CreateBadRequestObjectResult(status.Errors);
+        }
+
+        /// <summary>
+        /// This allows you to return a CreatedAtRoute result for a Create
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="controller"></param>
+        /// <param name="routeName">The values needed to work with the HttpGet to return the correct item</param>
+        /// <param name="routeValues"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public static ActionResult<T> Response<T>(this GenericBizRunner.IStatusGeneric status, 
+            ControllerBase controller, string routeName, object routeValues, T dto)
+        {
+            if (!status.HasErrors)
+                return controller.CreatedAtRoute(routeName, routeValues, dto);
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors);

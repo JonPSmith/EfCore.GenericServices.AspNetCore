@@ -1,11 +1,12 @@
 ﻿// Copyright (c) 2018 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
-// Licensed under MIT licence. See License.txt in the project root for license information.
+// Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Linq;
+using ExampleWebApi.Controllers;
+using ExampleWebApi.Dtos;
 using GenericBizRunner;
 using GenericServices.AspNetCore;
 using GenericServices.AspNetCore.UnitTesting;
-using Test.Helpers;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 
@@ -216,5 +217,144 @@ namespace Test.UnitTests
             rStatus.Errors.Single().ErrorResult.ErrorMessage.ShouldEqual("Bad");
             rStatus.Errors.Single().ErrorResult.MemberNames.ShouldEqual(new[] { "" });
         }
+
+        //----------------------------------------------------
+        //Test Create response
+
+        [Fact]
+        public void TestCreateStatusOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+            var controller = new ToDoController();
+            var dto = new CreateTodoDto();
+            var actionResult = status.Response(controller, "Get", new { id = 7}, dto);
+
+            //ATTEMPT
+            var statusCode = actionResult.GetStatusCode();
+            var rStatus = actionResult.CheckCreateResponse("Get", new { id = 7 }, dto);
+
+            //VERIFY
+            statusCode.ShouldEqual(CreateResponse.CreatedStatusCode);
+            rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+            rStatus.Message.ShouldEqual("Success");
+        }
+
+        [Fact]
+        public void TestCreateStatusWithErrorsOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+            var controller = new ToDoController();
+            var dto = new CreateTodoDto();
+
+            status.AddError("An error");
+            var actionResult = status.Response(controller, "Get", new { id = 7 }, dto);
+
+            //ATTEMPT
+            var statusCode = actionResult.GetStatusCode();
+            var rStatus = actionResult.CheckCreateResponse("Get", new { id = 7 }, dto);
+
+            //VERIFY
+            statusCode.ShouldEqual(CreateResponse.ErrorsStatusCode);
+            rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
+            rStatus.Message.ShouldEqual("There were 1 errors in this call");
+        }
+
+        [Fact]
+        public void TestCreateStatusBadRouteNameOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+            var controller = new ToDoController();
+            var dto = new CreateTodoDto();
+            var actionResult = status.Response(controller, "Bad", new { id = 7 }, dto);
+
+            //ATTEMPT
+            var statusCode = actionResult.GetStatusCode();
+            var rStatus = actionResult.CheckCreateResponse("Get", new { id = 7 }, dto);
+
+            //VERIFY
+            statusCode.ShouldEqual(CreateResponse.CreatedStatusCode);
+            rStatus.IsValid.ShouldBeFalse(rStatus.GetAllErrors());
+            rStatus.GetAllErrors().ShouldEqual("RouteName: expected Get, found: Bad");
+        }
+
+        [Fact]
+        public void TestCreateStatusBadDtoOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+            var controller = new ToDoController();
+            var dto = new CreateTodoDto();
+            var actionResult = status.Response(controller, "Get", new { id = 7 }, dto);
+
+            //ATTEMPT
+            var statusCode = actionResult.GetStatusCode();
+            var rStatus = actionResult.CheckCreateResponse("Get", new { id = 7 }, new CreateTodoDto());
+
+            //VERIFY
+            statusCode.ShouldEqual(CreateResponse.CreatedStatusCode);
+            rStatus.IsValid.ShouldBeFalse(rStatus.GetAllErrors());
+            rStatus.GetAllErrors().ShouldEqual("DTO: the returned DTO instance does not match the test DTO: expected CreateTodoDto, found: CreateTodoDto");
+        }
+
+        [Fact]
+        public void TestCreateStatusRouteValueNamesNotMatchOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+            var controller = new ToDoController();
+            var dto = new CreateTodoDto();
+            var actionResult = status.Response(controller, "Get", new { bad = 7 }, dto);
+
+            //ATTEMPT
+            var statusCode = actionResult.GetStatusCode();
+            var rStatus = actionResult.CheckCreateResponse("Get", new { id = 7 }, dto);
+
+            //VERIFY
+            statusCode.ShouldEqual(CreateResponse.CreatedStatusCode);
+            rStatus.IsValid.ShouldBeFalse(rStatus.GetAllErrors());
+            rStatus.GetAllErrors().ShouldEqual("RouteValues: Different named properties: expected = id, found = bad");
+        }
+
+        [Fact]
+        public void TestCreateStatusRouteValueTypeNotMatchOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+            var controller = new ToDoController();
+            var dto = new CreateTodoDto();
+            var actionResult = status.Response(controller, "Get", new { id = "hello" }, dto);
+
+            //ATTEMPT
+            var statusCode = actionResult.GetStatusCode();
+            var rStatus = actionResult.CheckCreateResponse("Get", new { id = 7 }, dto);
+
+            //VERIFY
+            statusCode.ShouldEqual(CreateResponse.CreatedStatusCode);
+            rStatus.IsValid.ShouldBeFalse(rStatus.GetAllErrors());
+            rStatus.GetAllErrors().ShouldEqual("RouteValues->id, different type: expected = Int32, found = String");
+        }
+
+        [Fact]
+        public void TestCreateStatusRouteValueValueNotMatchOk()
+        {
+            //SETUP
+            var status = new StatusGenericHandler();
+            var controller = new ToDoController();
+            var dto = new CreateTodoDto();
+            var actionResult = status.Response(controller, "Get", new { id = 999 }, dto);
+
+            //ATTEMPT
+            var statusCode = actionResult.GetStatusCode();
+            var rStatus = actionResult.CheckCreateResponse("Get", new { id = 7 }, dto);
+
+            //VERIFY
+            statusCode.ShouldEqual(CreateResponse.CreatedStatusCode);
+            rStatus.IsValid.ShouldBeFalse(rStatus.GetAllErrors());
+            rStatus.GetAllErrors().ShouldEqual("RouteValues->id, different values: expected = 7, found = 999");
+        }
+
     }
 }
