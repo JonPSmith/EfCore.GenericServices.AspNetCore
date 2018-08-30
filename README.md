@@ -45,6 +45,7 @@ There are the following versions for both the GenericService and GenericBizRunne
 - `IActionResult ResponseWithValidCode(this IStatusGeneric status, int validStatusCode)` - this returns the status without any results, using the `validStatusCode` if the status has no errors.
 - `ActionResult<T> Response<T>(this IStatusGeneric status, T results)` - this returns the status with the results as a json object.
 - `ActionResult<T> ResponseWithValidCode<T>(this IStatusGeneric status, T results, int validStatusCode, int nullResultStatusCode = 204)` - this returns the status with the results as a json object, using the `validStatusCode` if the status has no errors and the result isn't null, or if the result is null it returns the `nullResultStatusCode`, which defaults to 204.
+- `ActionResult<T> Response(this IStatusGeneric status, ControllerBase controller, string routeName, object routeValues, T dto)` - this can be used with a Create to return a 201 status and a url to obtain the created item
 
 ### Return formats
 
@@ -80,6 +81,26 @@ The json sent looks like this:
 {
   "message": "The Todo Item was not found."
 }
+```
+
+#### 4. Create, returning a url
+The `ActionResult<T> Response(this IStatusGeneric status, ControllerBase controller, string routeName, object routeValues, T dto)`
+method uses Microsoft's `CreatedAtRoute` method to return an HTTP status of 201 (Created), with the url to obtain the created item.
+This matches the HTTP status code definitions for a 201 create. Here is an example response:
+
+Response body
+```json
+{
+  "name": "string",
+  "difficulty": 1
+}
+```
+Response headers (see returned url on line 3)
+```json
+ content-type: application/json; charset=utf-8 
+ date: Thu, 30 Aug 2018 11:07:48 GMT 
+ location: http://localhost:54074/api/ToDo/7 
+ ... other parts removed 
 ```
 
 #### 4. Error

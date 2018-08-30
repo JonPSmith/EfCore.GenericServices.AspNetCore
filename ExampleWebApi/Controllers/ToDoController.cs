@@ -50,13 +50,13 @@ namespace ExampleWebApi.Controllers
         /// <returns>If successful it returns a CreatedAtRoute response - see
         /// https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-2.1#implement-the-other-crud-operations
         /// </returns>
-        [ProducesResponseType(typeof (CreateTodoDto), 201)]
+        [ProducesResponseType(typeof (CreateTodoDto), 201)] //Optional. If left off Swagger says it returns 200, not 201
         [HttpPost]
         public ActionResult<CreateTodoDto> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
         {
             var result = service.RunBizAction<TodoItem>(item);
-            //NOTE: to get this to work you must:
-            //Set the name of the HttpGet, e.g. [HttpGet("{id}", Name= "Get")], and then use the Name value in the CreatedAtRoute
+            //NOTE: to get this to work you MUST set the name of the HttpGet, e.g. [HttpGet("{id}", Name= "Get")],
+            //and then use the Name value in the Response, otherwise you get a "No route matches the supplied values" error
             //see https://stackoverflow.com/questions/36560239/asp-net-core-createdatroute-failure for more on this
             return service.Status.Response(this, "Get", new { id = result.Id },  item);
         }
