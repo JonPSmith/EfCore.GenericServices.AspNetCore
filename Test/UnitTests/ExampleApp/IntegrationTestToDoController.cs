@@ -130,7 +130,7 @@ namespace Test.UnitTests.ExampleApp
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(201);
-                var rStatus = response.CheckCreateResponse("Get", new {id = 7}, dto);
+                var rStatus = response.CheckCreateResponse("GetSingleTodo", new {id = 7}, dto);
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Message.ShouldEqual("Success");
             }
@@ -186,7 +186,7 @@ namespace Test.UnitTests.ExampleApp
                     Id = 1,
                     Difficulty = 5,
                 };
-                var response = controller.PutDifficuty(dto, service);
+                var response = controller.PutDifficulty(dto, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
@@ -216,7 +216,7 @@ namespace Test.UnitTests.ExampleApp
                     Id = 1,
                     Difficulty = 99,
                 };
-                var response = controller.PutDifficuty(dto, service);
+                var response = controller.PutDifficulty(dto, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.ErrorsStatusCode);

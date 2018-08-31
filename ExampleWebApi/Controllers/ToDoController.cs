@@ -34,7 +34,7 @@ namespace ExampleWebApi.Controllers
         /// <param name="service"></param>
         /// <returns></returns>
         // GET api/todo/5
-        [HttpGet("{id}", Name= "Get")]
+        [HttpGet("{id}", Name= "GetSingleTodo")]
         public async Task<ActionResult<WebApiMessageAndResult<TodoItem>>> GetAsync(int id, [FromServices]ICrudServicesAsync service)
         {
             return service.Response(await service.ReadSingleAsync<TodoItem>(id));
@@ -55,10 +55,11 @@ namespace ExampleWebApi.Controllers
         public ActionResult<CreateTodoDto> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
         {
             var result = service.RunBizAction<TodoItem>(item);
-            //NOTE: to get this to work you MUST set the name of the HttpGet, e.g. [HttpGet("{id}", Name= "Get")],
-            //and then use the Name value in the Response, otherwise you get a "No route matches the supplied values" error
+            //NOTE: to get this to work you MUST set the name of the HttpGet, e.g. [HttpGet("{id}", Name= "GetSingleTodo")],
+            //on the Get you want to call, then then use the Name value in the Response.
+            //Otherwise you get a "No route matches the supplied values" error.
             //see https://stackoverflow.com/questions/36560239/asp-net-core-createdatroute-failure for more on this
-            return service.Status.Response(this, "Get", new { id = result.Id },  item);
+            return service.Status.Response(this, "GetSingleTodo", new { id = result.Id },  item);
         }
 
         // PUT api/todo {id=1, name='NewName'}
@@ -86,7 +87,7 @@ namespace ExampleWebApi.Controllers
         // PUT api/todo {id=1, difficulty=3}
         [Route("putdifficulty")]
         [HttpPut]
-        public ActionResult<WebApiMessageOnly> PutDifficuty(ChangeDifficultyDto dto, [FromServices]ICrudServices service)
+        public ActionResult<WebApiMessageOnly> PutDifficulty(ChangeDifficultyDto dto, [FromServices]ICrudServices service)
         {
             service.UpdateAndSave(dto);
             return service.Response();
