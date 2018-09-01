@@ -59,7 +59,7 @@ namespace ExampleWebApi.Controllers
             //on the Get you want to call, then then use the Name value in the Response.
             //Otherwise you get a "No route matches the supplied values" error.
             //see https://stackoverflow.com/questions/36560239/asp-net-core-createdatroute-failure for more on this
-            return service.Status.Response(this, "GetSingleTodo", new { id = result.Id },  item);
+            return service.Status.Response(this, "GetSingleTodo", new { id = result?.Id },  item);
         }
 
         // PUT api/todo {id=1, name='NewName'}
