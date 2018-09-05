@@ -259,7 +259,7 @@ namespace Test.UnitTests
             //VERIFY
             statusCode.ShouldEqual(CreateResponse.ErrorsStatusCode);
             rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
-            rStatus.Message.ShouldEqual("There were 1 errors in this call");
+            rStatus.Message.ShouldEqual("Errors: An error");
         }
 
         [Fact]

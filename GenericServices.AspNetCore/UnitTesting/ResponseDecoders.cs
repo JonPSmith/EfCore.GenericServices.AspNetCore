@@ -73,8 +73,7 @@ namespace GenericServices.AspNetCore.UnitTesting
             var errorPart = objResult as BadRequestObjectResult;
             if (errorPart != null)
             {
-                var errors = ExtractErrors(errorPart);
-                testStatus.Message = $"There were {errors.Count()} errors in this call";
+                testStatus.Message = "Errors: " + string.Join("\n", ExtractErrors(errorPart));
                 return testStatus;
             }
 
