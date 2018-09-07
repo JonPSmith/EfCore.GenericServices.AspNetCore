@@ -45,7 +45,7 @@ namespace Test.UnitTests.ExampleApp
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var response = await controller.GetAsync(service);
+                var response = await controller.GetManyAsync(service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
@@ -70,7 +70,7 @@ namespace Test.UnitTests.ExampleApp
                 var service = new CrudServicesAsync(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var response = await controller.GetAsync(1, service);
+                var response = await controller.GetSingleAsync(1, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
@@ -95,7 +95,7 @@ namespace Test.UnitTests.ExampleApp
                 var service = new CrudServicesAsync(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var response = await controller.GetAsync(99, service);
+                var response = await controller.GetSingleAsync(99, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.ResultIsNullStatusCode);
@@ -156,7 +156,7 @@ namespace Test.UnitTests.ExampleApp
                     Id = 2,
                     Name = "Test",
                 };
-                var response = controller.PutName(dto, service);
+                var response = controller.Name(dto, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
@@ -186,7 +186,7 @@ namespace Test.UnitTests.ExampleApp
                     Id = 1,
                     Difficulty = 5,
                 };
-                var response = controller.PutDifficulty(dto, service);
+                var response = controller.Difficulty(dto, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
@@ -216,7 +216,7 @@ namespace Test.UnitTests.ExampleApp
                     Id = 1,
                     Difficulty = 99,
                 };
-                var response = controller.PutDifficulty(dto, service);
+                var response = controller.Difficulty(dto, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.ErrorsStatusCode);

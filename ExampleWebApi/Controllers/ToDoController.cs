@@ -22,7 +22,7 @@ namespace ExampleWebApi.Controllers
         /// <returns></returns>
         // GET api/values
         [HttpGet]
-        public async Task<ActionResult<WebApiMessageAndResult<List<TodoItem>>>> GetAsync([FromServices]ICrudServices service)
+        public async Task<ActionResult<WebApiMessageAndResult<List<TodoItem>>>> GetManyAsync([FromServices]ICrudServices service)
         {
             return service.Response(await service.ReadManyNoTracked<TodoItem>().ToListAsync());
         }
@@ -34,8 +34,7 @@ namespace ExampleWebApi.Controllers
         /// <param name="service"></param>
         /// <returns></returns>
         // GET api/todo/5
-        [HttpGet("{id}", Name= "GetSingleTodo")]
-        public async Task<ActionResult<WebApiMessageAndResult<TodoItem>>> GetAsync(int id, [FromServices]ICrudServicesAsync service)
+        public async Task<ActionResult<WebApiMessageAndResult<TodoItem>>> GetSingleAsync(int id, [FromServices]ICrudServicesAsync service)
         {
             return service.Response(await service.ReadSingleAsync<TodoItem>(id));
         }
@@ -50,7 +49,7 @@ namespace ExampleWebApi.Controllers
         /// <returns>If successful it returns a CreatedAtRoute response - see
         /// https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-2.1#implement-the-other-crud-operations
         /// </returns>
-        [ProducesResponseType(typeof (CreateTodoDto), 201)] //Optional. If left off Swagger says it returns 200, not 201
+        [ProducesResponseType(typeof (CreateTodoDto), 201)] //You need this, otherwise Swagger says the success status is 200, not 201
         [HttpPost]
         public ActionResult<CreateTodoDto> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
         {
@@ -62,16 +61,15 @@ namespace ExampleWebApi.Controllers
             return service.Status.Response(this, "GetSingleTodo", new { id = result?.Id },  item);
         }
 
-        // PUT api/todo {id=1, name='NewName'}
         /// <summary>
         /// Updates the Name. It does this via a DDD-styles entity access method.
         /// NOTE: There is extra validation (name can't end with !) in the DDD access method
         /// </summary>
         /// <param name="dto">dto containing Id and Name</param>
         /// <param name="service"></param>
-        [Route("putname")]
-        [HttpPut()]
-        public ActionResult<WebApiMessageOnly> PutName(ChangeNameDto dto, [FromServices]ICrudServices service)
+        [Route("name")]
+        [HttpPatch()]
+        public ActionResult<WebApiMessageOnly> Name(ChangeNameDto dto, [FromServices]ICrudServices service)
         {
             service.UpdateAndSave(dto);
             return service.Response();
@@ -80,14 +78,14 @@ namespace ExampleWebApi.Controllers
         /// <summary>
         /// Updates the Difficulty. It does this via a DDD-styles entity access method.
         /// NOTE: this access method doesn't return a status, i.e. there is no extra validation in the access method
+        /// but if the new difficultly value is outside 1 to 5 the database validation would return an error
         /// </summary>
         /// <param name="dto">dto containing Id and Difficulty number</param>
         /// <param name="service"></param>
         /// <returns></returns>
-        // PUT api/todo {id=1, difficulty=3}
-        [Route("putdifficulty")]
-        [HttpPut]
-        public ActionResult<WebApiMessageOnly> PutDifficulty(ChangeDifficultyDto dto, [FromServices]ICrudServices service)
+        [Route("difficulty")]
+        [HttpPatch]
+        public ActionResult<WebApiMessageOnly> Difficulty(ChangeDifficultyDto dto, [FromServices]ICrudServices service)
         {
             service.UpdateAndSave(dto);
             return service.Response();
