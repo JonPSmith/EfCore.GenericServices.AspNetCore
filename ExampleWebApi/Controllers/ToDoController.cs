@@ -39,7 +39,6 @@ namespace ExampleWebApi.Controllers
             return service.Response(await service.ReadSingleAsync<TodoItem>(id));
         }
 
-        // POST api/todo {name='name', difficulty=1}
         /// <summary>
         /// Creates a new item and returns the created entity, with the Id value provided by the database
         /// NOTE: to show how business logic might work I added extra validation (name can't end with !) in the business logic
