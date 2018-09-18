@@ -6,6 +6,7 @@ using ExampleWebApi.Dtos;
 using GenericBizRunner;
 using GenericServices;
 using GenericServices.AspNetCore;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,30 +14,30 @@ namespace ExampleWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ToDoController : ControllerBase
+    public class ToDoHybridController : ControllerBase
     {
         /// <summary>
-        /// Gets all the TodoItem items
+        /// Gets all the TodoItemHybrid items
         /// </summary>
         /// <param name="service"></param>
         /// <returns></returns>
         // GET api/values
         [HttpGet]
-        public async Task<ActionResult<WebApiMessageAndResult<List<TodoItem>>>> GetManyAsync([FromServices]ICrudServices service)
+        public async Task<ActionResult<WebApiMessageAndResult<List<TodoItemHybrid>>>> GetManyAsync([FromServices]ICrudServices service)
         {
-            return service.Response(await service.ReadManyNoTracked<TodoItem>().ToListAsync());
+            return service.Response(await service.ReadManyNoTracked<TodoItemHybrid>().ToListAsync());
         }
 
         /// <summary>
-        /// Gets the TodoItem with the given id
+        /// Gets the TodoItemHybrid with the given id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="service"></param>
         /// <returns></returns>
-        [HttpGet("{id}", Name = "GetSingleTodo")]
-        public async Task<ActionResult<WebApiMessageAndResult<TodoItem>>> GetSingleAsync(int id, [FromServices]ICrudServicesAsync service)
+        [HttpGet("{id}", Name = "GetSingleHybridTodo")]
+        public async Task<ActionResult<WebApiMessageAndResult<TodoItemHybrid>>> GetSingleAsync(int id, [FromServices]ICrudServicesAsync service)
         {
-            return service.Response(await service.ReadSingleAsync<TodoItem>(id));
+            return service.Response(await service.ReadSingleAsync<TodoItemHybrid>(id));
         }
 
         /// <summary>
@@ -48,16 +49,16 @@ namespace ExampleWebApi.Controllers
         /// <returns>If successful it returns a CreatedAtRoute response - see
         /// https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-2.1#implement-the-other-crud-operations
         /// </returns>
-        [ProducesResponseType(typeof (CreateTodoDto), 201)] //You need this, otherwise Swagger says the success status is 200, not 201
+        [ProducesResponseType(typeof (TodoItemHybrid), 201)] //You need this, otherwise Swagger says the success status is 200, not 201
         [HttpPost]
-        public ActionResult<CreateTodoDto> Post(CreateTodoDto item, [FromServices]IActionService<ICreateTodoBizLogic> service)
+        public async Task<ActionResult<CreateTodoHybridDto>> PostAsync(CreateTodoHybridDto item, [FromServices]ICrudServicesAsync service)
         {
-            var result = service.RunBizAction<TodoItem>(item);
+            var result = await service.CreateAndSaveAsync(item);
             //NOTE: to get this to work you MUST set the name of the HttpGet, e.g. [HttpGet("{id}", Name= "GetSingleTodo")],
             //on the Get you want to call, then then use the Name value in the Response.
             //Otherwise you get a "No route matches the supplied values" error.
             //see https://stackoverflow.com/questions/36560239/asp-net-core-createdatroute-failure for more on this
-            return service.Status.Response(this, "GetSingleTodo", new { id = result?.Id },  item);
+            return service.Response(this, "GetSingleHybridTodo", new { id = result.Id },  item);
         }
 
         /// <summary>
@@ -68,30 +69,29 @@ namespace ExampleWebApi.Controllers
         /// <param name="service"></param>
         [Route("name")]
         [HttpPatch()]
-        public ActionResult<WebApiMessageOnly> Name(ChangeNameDto dto, [FromServices]ICrudServices service)
+        public ActionResult<WebApiMessageOnly> Name(ChangeNameHybridDto dto, [FromServices]ICrudServices service)
         {
             service.UpdateAndSave(dto);
             return service.Response();
         }
 
         /// <summary>
-        /// Updates the Difficulty. It does this via a DDD-styles entity access method.
-        /// NOTE: this access method doesn't return a status, i.e. there is no extra validation in the access method
-        /// but if the new difficultly value is outside 1 to 5 the database validation would return an error
+        /// Updates the Difficulty. It does this using JSON Patch
         /// </summary>
-        /// <param name="dto">dto containing Id and Difficulty number</param>
+        /// <param name="id"></param>
+        /// <param name="patch">contains the patch information</param>
         /// <param name="service"></param>
         /// <returns></returns>
         [Route("difficulty")]
-        [HttpPatch]
-        public ActionResult<WebApiMessageOnly> Difficulty(ChangeDifficultyDto dto, [FromServices]ICrudServices service)
+        [HttpPatch("{id}")]
+        public ActionResult<WebApiMessageOnly> Update(int id, JsonPatchDocument<TodoItemHybrid> patch, [FromServices]ICrudServices service)
         {
-            service.UpdateAndSave(dto);
+            service.UpdateAndSave(patch);
             return service.Response();
         }
 
         /// <summary>
-        /// Deletes the TodoItem with the given id
+        /// Deletes the TodoItemHybrid with the given id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="service"></param>
@@ -100,7 +100,7 @@ namespace ExampleWebApi.Controllers
         [HttpDelete("{id}")]
         public ActionResult<WebApiMessageOnly> Delete(int id, [FromServices]ICrudServices service)
         {
-            service.DeleteAndSave<TodoItem>(id);
+            service.DeleteAndSave<TodoItemHybrid>(id);
             return service.Response();
         }
     }

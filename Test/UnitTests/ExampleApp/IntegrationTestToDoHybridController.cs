@@ -14,6 +14,7 @@ using GenericServices.AspNetCore.UnitTesting;
 using GenericServices.Configuration;
 using GenericServices.PublicButHidden;
 using GenericServices.Setup;
+using Microsoft.AspNetCore.JsonPatch;
 using Test.Helpers;
 using TestSupport.EfHelpers;
 using Xunit;
@@ -21,7 +22,7 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.ExampleApp
 {
-    public class IntegrationTestToDoController
+    public class IntegrationTestToDoHybridController
     {
         private readonly IGenericServicesConfig _genericServiceConfig = new GenericServicesConfig
         {
@@ -40,8 +41,8 @@ namespace Test.UnitTests.ExampleApp
                 context.Database.EnsureCreated();
                 context.SeedDatabase();
 
-                var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
+                var controller = new ToDoHybridController();
+                var utData = context.SetupEntitiesDirect(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
@@ -65,8 +66,8 @@ namespace Test.UnitTests.ExampleApp
                 context.Database.EnsureCreated();
                 context.SeedDatabase();
 
-                var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
+                var controller = new ToDoHybridController();
+                var utData = context.SetupEntitiesDirect(_genericServiceConfig);
                 var service = new CrudServicesAsync(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
@@ -90,8 +91,8 @@ namespace Test.UnitTests.ExampleApp
                 context.Database.EnsureCreated();
                 context.SeedDatabase();
 
-                var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
+                var controller = new ToDoHybridController();
+                var utData = context.SetupEntitiesDirect(_genericServiceConfig);
                 var service = new CrudServicesAsync(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
@@ -101,12 +102,12 @@ namespace Test.UnitTests.ExampleApp
                 response.GetStatusCode().ShouldEqual(CreateResponse.ResultIsNullStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
-                rStatus.Message.ShouldEqual("The Todo Item was not found.");
+                rStatus.Message.ShouldEqual("The Todo Item Hybrid was not found.");
             }
         }
 
         [Fact]
-        public void TestCreateTodoOk()
+        public async Task TestCreateTodoOk()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
@@ -114,23 +115,22 @@ namespace Test.UnitTests.ExampleApp
             {
                 context.Database.EnsureCreated();
                 context.SeedDatabase();
-                var controller = new ToDoController();
 
-                var mapper = BizRunnerHelpers.CreateEmptyMapper();
-                var bizInstance = new CreateTodoBizLogic(context);
-                var service = new ActionService<ICreateTodoBizLogic>(context, bizInstance, mapper);
+                var controller = new ToDoHybridController();
+                var utData = context.SetupSingleDtoAndEntities<CreateTodoHybridDto>(_genericServiceConfig);
+                var service = new CrudServicesAsync(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var dto = new CreateTodoDto()
+                var dto = new CreateTodoHybridDto()
                 {
                     Name = "Test",
                     Difficulty = 3,
                 };
-                var response = controller.Post(dto, service);
+                var response = await controller.PostAsync(dto, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(201);
-                var rStatus = response.CheckCreateResponse("GetSingleTodo", new {id = 7}, dto);
+                var rStatus = response.CheckCreateResponse("GetSingleHybridTodo", new {id = 7}, dto);
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Message.ShouldEqual("Success");
             }
@@ -146,12 +146,12 @@ namespace Test.UnitTests.ExampleApp
                 context.Database.EnsureCreated();
                 context.SeedDatabase();
 
-                var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeNameDto>(_genericServiceConfig);
+                var controller = new ToDoHybridController();
+                var utData = context.SetupSingleDtoAndEntities<ChangeNameHybridDto>(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var dto = new ChangeNameDto()
+                var dto = new ChangeNameHybridDto()
                 {
                     Id = 2,
                     Name = "Test",
@@ -162,12 +162,12 @@ namespace Test.UnitTests.ExampleApp
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
-                rStatus.Message.ShouldEqual("Successfully updated the Todo Item");
+                rStatus.Message.ShouldEqual("Successfully updated the Todo Item Hybrid");
             }
         }
 
         [Fact]
-        public void TestPutDifficultyOk()
+        public void TestJsonPatchOk()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
@@ -176,55 +176,24 @@ namespace Test.UnitTests.ExampleApp
                 context.Database.EnsureCreated();
                 context.SeedDatabase();
 
-                var controller = new ToDoController();
+                var controller = new ToDoHybridController();
                 var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
-                var dto = new ChangeDifficultyDto()
-                {
-                    Id = 1,
-                    Difficulty = 5,
-                };
-                var response = controller.Difficulty(dto, service);
+                var patch = new JsonPatchDocument<TodoItemHybrid>();
+                patch.Replace(x => x.Difficulty, 5);
+                var response = controller.Update(1, patch, service);
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
-                rStatus.Message.ShouldEqual("Successfully updated the Todo Item");
+                rStatus.Message.ShouldEqual("Successfully updated the Todo Item Hybrid");
+                context.TodoItemHybrids.First().Difficulty.ShouldEqual(5);
             }
         }
 
-        [Fact]
-        public void TestPutDifficultyValidationError()
-        {
-            //SETUP
-            var options = SqliteInMemory.CreateOptions<ExampleDbContext>();
-            using (var context = new ExampleDbContext(options))
-            {
-                context.Database.EnsureCreated();
-                context.SeedDatabase();
-
-                var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
-                var service = new CrudServices(context, utData.ConfigAndMapper);
-
-                //ATTEMPT
-                var dto = new ChangeDifficultyDto()
-                {
-                    Id = 1,
-                    Difficulty = 99,
-                };
-                var response = controller.Difficulty(dto, service);
-
-                //VERIFY
-                response.GetStatusCode().ShouldEqual(CreateResponse.ErrorsStatusCode);
-                var rStatus = response.CopyToStatus();
-                rStatus.IsValid.ShouldBeFalse();
-                rStatus.GetAllErrors().ShouldEqual("The field Difficulty must be between 1 and 5.");
-            }
-        }
 
         [Fact]
         public void TestDeleteOK()
@@ -236,8 +205,8 @@ namespace Test.UnitTests.ExampleApp
                 context.Database.EnsureCreated();
                 context.SeedDatabase();
 
-                var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
+                var controller = new ToDoHybridController();
+                var utData = context.SetupEntitiesDirect(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
@@ -247,8 +216,8 @@ namespace Test.UnitTests.ExampleApp
                 response.GetStatusCode().ShouldEqual(CreateResponse.OkStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
-                rStatus.Message.ShouldEqual("Successfully deleted a Todo Item");
-                context.TodoItems.Count().ShouldEqual(5);
+                rStatus.Message.ShouldEqual("Successfully deleted a Todo Item Hybrid");
+                context.TodoItemHybrids.Count().ShouldEqual(5);
             }
         }
 
@@ -262,8 +231,8 @@ namespace Test.UnitTests.ExampleApp
                 context.Database.EnsureCreated();
                 context.SeedDatabase();
 
-                var controller = new ToDoController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
+                var controller = new ToDoHybridController();
+                var utData = context.SetupEntitiesDirect(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT
@@ -273,7 +242,7 @@ namespace Test.UnitTests.ExampleApp
                 response.GetStatusCode().ShouldEqual(CreateResponse.ErrorsStatusCode);
                 var rStatus = response.CopyToStatus();
                 rStatus.IsValid.ShouldBeFalse();
-                rStatus.GetAllErrors().ShouldEqual("Sorry, I could not find the Todo Item you wanted to delete.");
+                rStatus.GetAllErrors().ShouldEqual("Sorry, I could not find the Todo Item Hybrid you wanted to delete.");
             }
         }
 
