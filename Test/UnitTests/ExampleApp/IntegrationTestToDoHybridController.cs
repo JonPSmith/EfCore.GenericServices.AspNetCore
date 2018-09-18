@@ -177,7 +177,7 @@ namespace Test.UnitTests.ExampleApp
                 context.SeedDatabase();
 
                 var controller = new ToDoHybridController();
-                var utData = context.SetupSingleDtoAndEntities<ChangeDifficultyDto>(_genericServiceConfig);
+                var utData = context.SetupEntitiesDirect(_genericServiceConfig);
                 var service = new CrudServices(context, utData.ConfigAndMapper);
 
                 //ATTEMPT

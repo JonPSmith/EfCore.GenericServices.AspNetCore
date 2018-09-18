@@ -82,11 +82,10 @@ namespace ExampleWebApi.Controllers
         /// <param name="patch">contains the patch information</param>
         /// <param name="service"></param>
         /// <returns></returns>
-        [Route("difficulty")]
         [HttpPatch("{id}")]
         public ActionResult<WebApiMessageOnly> Update(int id, JsonPatchDocument<TodoItemHybrid> patch, [FromServices]ICrudServices service)
         {
-            service.UpdateAndSave(patch);
+            service.UpdateAndSave(patch, id);
             return service.Response();
         }
 
