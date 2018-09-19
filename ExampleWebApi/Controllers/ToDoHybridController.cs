@@ -90,6 +90,27 @@ namespace ExampleWebApi.Controllers
         }
 
         /// <summary>
+        /// Updates the Difficulty. It does this using JSON Patch
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="patch">contains the patch information</param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        [Route("handcoded")]
+        [HttpPatch("{id}")]
+        public IActionResult HandCodedUpdate(int id, JsonPatchDocument<TodoItemHybrid> patch, [FromServices]ExampleDbContext context)
+        {
+            var entity = context.Find<TodoItemHybrid>(id);
+            if (entity == null)
+            {
+                return NoContent();
+            }
+            patch.ApplyTo(entity);
+            context.SaveChanges();
+            return Ok();
+        }
+
+        /// <summary>
         /// Deletes the TodoItemHybrid with the given id
         /// </summary>
         /// <param name="id"></param>
