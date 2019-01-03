@@ -25,7 +25,7 @@ namespace ExampleDatabase
 
         public TodoItemHybrid(string name, int difficulty)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name = name;
             Difficulty = difficulty;
         }
 
