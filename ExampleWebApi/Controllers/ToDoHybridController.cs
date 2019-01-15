@@ -82,7 +82,8 @@ namespace ExampleWebApi.Controllers
         /// <param name="patch">contains the patch information</param>
         /// <param name="service"></param>
         /// <returns></returns>
-        [HttpPatch("{id}")]
+        [Route("difficulty")]
+        [HttpPatch()]
         public ActionResult<WebApiMessageOnly> Update(int id, JsonPatchDocument<TodoItemHybrid> patch, [FromServices]ICrudServices service)
         {
             service.UpdateAndSave(patch, id);
@@ -97,7 +98,7 @@ namespace ExampleWebApi.Controllers
         /// <param name="context"></param>
         /// <returns></returns>
         [Route("handcoded")]
-        [HttpPatch("{id}")]
+        [HttpPatch()]
         public IActionResult HandCodedUpdate(int id, JsonPatchDocument<TodoItemHybrid> patch, [FromServices]ExampleDbContext context)
         {
             var entity = context.Find<TodoItemHybrid>(id);
