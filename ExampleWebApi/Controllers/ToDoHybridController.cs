@@ -49,7 +49,7 @@ namespace ExampleWebApi.Controllers
         /// <returns>If successful it returns a CreatedAtRoute response - see
         /// https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-2.1#implement-the-other-crud-operations
         /// </returns>
-        [ProducesResponseType(typeof (TodoItemHybrid), 201)] //You need this, otherwise Swagger says the success status is 200, not 201
+        [ProducesResponseType(typeof (CreateTodoHybridDto), 201)] //You need this, otherwise Swagger says the success status is 200, not 201
         [HttpPost]
         public async Task<ActionResult<CreateTodoHybridDto>> PostAsync(CreateTodoHybridDto item, [FromServices]ICrudServicesAsync service)
         {
