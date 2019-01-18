@@ -17,7 +17,7 @@ MIT licence - available on [NuGet](https://www.nuget.org/packages/EfCore.Generic
 
 ## 1. ASP.NET Core MVC or Razor pages - copy status to `ModelState`
 
-The extention method `CopyErrorsToModelState` which copy `IStatusGeneric` errors into ASP.NET Core's `ModelState`.
+The extension method `CopyErrorsToModelState` which copy `IStatusGeneric` errors into ASP.NET Core's `ModelState`.
 Useful when working html/razor pages.
 
 There are two forms of the method `CopyErrorsToModelState` - they are:
@@ -28,10 +28,23 @@ In ASP.NET Core MVC or Razor pages you need to return errors vai the ModelState,
 
 Because the Generic libraries can return errors with for properties not found in the display class there is a version of `CopyErrorsToModelState` that takes a parameter called `displayDto` and it will ensure the name is only set on properties that the `displayDto` has in it.
 
+```csharp
+service.Status.CopyErrorsToModelState(ModelState, inputDto);
+```
+
+*NOTE: If you are using `CopyErrorsToModelState` with razor pages then you have to provide a prefix to each property name that matches the name of the bound property in the Razor Page C# file. See [this section](https://www.thereformedprogrammer.net/six-things-i-learnt-about-using-asp-net-cores-razor-pages/#changed-the-validation-name-in-the-view-is-a-bit-more-complex) for an explanation on why. Here is an example:*
+
+```csharp
+service.Status.CopyErrorsToModelState(ModelState, inputDto, nameof(Data));
+```
+
 ### 1b. `CopyErrorsToModelState` without a dto
 
-If you want all the errors to have the property name left intact then there is another version that doesn't have a `displayDto` parameter.
+If there is no DTO/ViewModel involved in the service then there is a version that doesn't have a `displayDto` parameter. This leaves the property names left as they were when the error was reported.
 
+```csharp
+service.Status.CopyErrorsToModelState(ModelState);
+```
 
 ## 2. ASP.NET Core Web API - forming the correct HTTP response
 
@@ -125,12 +138,8 @@ The HTTP status code is 400 (BadRequest). The json sent looks like this:
 
 I have added some extension methods in the class [ResponseDecoders](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/GenericServices.AspNetCore/UnitTesting/ResponseDecoders.cs)
 that:
+
 1. Provides you with the HTTP Status Code in the response.
-2. Converts Web API responses that were created by the `CreateResponse` extension method into a  
-`GenericServices.IStatusGeneric` type. This allows you to inspect the Status, message, Errors and returned Result.
+2. Converts Web API responses that were created by the `CreateResponse` extension method into a `GenericServices.IStatusGeneric` type. This allows you to inspect the Status, message, Errors and returned Result.
 
-I have added a [section to my article on Web API](https://www.thereformedprogrammer.net/how-to-write-good-testable-asp-net-core-web-api-code-quickly/?preview=true#update-now-with-unit-test-support)
-that talks about this feature in more detail. 
-Also do look at [IntegrationTestToDoController](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/Test/UnitTests/ExampleApp/IntegrationTestToDoController.cs)
-for an example of how the `ResponseDecoders` extension methods are used.
-
+I have added a [section to my article on Web API](https://www.thereformedprogrammer.net/how-to-write-good-testable-asp-net-core-web-api-code-quickly/?preview=true#update-now-with-unit-test-support) that talks about this feature in more detail. Also do look at [IntegrationTestToDoController](https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/Test/UnitTests/ExampleApp/IntegrationTestToDoController.cs) for an example of how the `ResponseDecoders` extension methods are used.
