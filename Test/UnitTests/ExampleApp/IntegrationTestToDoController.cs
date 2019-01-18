@@ -130,7 +130,7 @@ namespace Test.UnitTests.ExampleApp
 
                 //VERIFY
                 response.GetStatusCode().ShouldEqual(201);
-                var rStatus = response.CheckCreateResponse("GetSingleTodo", new {id = 7}, dto);
+                var rStatus = response.CheckCreateResponse("GetSingleTodo", new {id = 7}, context.TodoItems.Find(7));
                 rStatus.IsValid.ShouldBeTrue(rStatus.GetAllErrors());
                 rStatus.Message.ShouldEqual("Success");
             }
