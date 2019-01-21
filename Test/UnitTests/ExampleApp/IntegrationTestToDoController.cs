@@ -9,6 +9,7 @@ using ExampleWebApi.Controllers;
 using ExampleWebApi.Dtos;
 using ExampleWebApi.Helpers;
 using GenericBizRunner;
+using GenericBizRunner.Configuration;
 using GenericServices.AspNetCore;
 using GenericServices.AspNetCore.UnitTesting;
 using GenericServices.Configuration;
@@ -116,9 +117,10 @@ namespace Test.UnitTests.ExampleApp
                 context.SeedDatabase();
                 var controller = new ToDoController();
 
-                var mapper = BizRunnerHelpers.CreateEmptyMapper();
+                var noCachingConfig = new GenericBizRunnerConfig { TurnOffCaching = true };
+                var utData = new NonDiBizSetup(noCachingConfig);
                 var bizInstance = new CreateTodoBizLogic(context);
-                var service = new ActionService<ICreateTodoBizLogic>(context, bizInstance, mapper);
+                var service = new ActionService<ICreateTodoBizLogic>(context, bizInstance, utData.WrappedConfig);
 
                 //ATTEMPT
                 var dto = new CreateTodoDto()

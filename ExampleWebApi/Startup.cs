@@ -59,8 +59,7 @@ namespace ExampleWebApi
                 },Assembly.GetAssembly(typeof(ChangeNameDto)));
 
             //GenericBizRunner configuration
-            services.RegisterGenericBizRunnerBasic<ExampleDbContext>();
-            services.AddAutoMapper(Assembly.GetAssembly(typeof (CreateTodoBizLogic)));
+            services.RegisterBizRunnerWithDtoScans<ExampleDbContext>(Assembly.GetAssembly(typeof(CreateTodoBizLogic)));
             services.AddTransient(typeof(ICreateTodoBizLogic), typeof(CreateTodoBizLogic));
 
             services.AddSwaggerGen(c =>
