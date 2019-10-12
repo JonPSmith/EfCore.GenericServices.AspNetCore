@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2018 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
-// Licensed under MIT licence. See License.txt in the project root for license information.
+// Licensed under MIT license. See License.txt in the project root for license information.
 
 using ExampleDatabase;
 using ExampleWebApi.Dtos;
@@ -21,7 +21,7 @@ namespace ExampleWebApi.BusinessLogic
         public TodoItem BizAction(CreateTodoDto inputData)
         {
             if (inputData.Name.EndsWith('!'))
-                AddError("Business logic says the name canot end with !", nameof(inputData.Name));
+                AddError("Business logic says the name cannot end with !", nameof(inputData.Name));
 
             var item = new TodoItem(inputData.Name, inputData.Difficulty);
             _context.Add(item);

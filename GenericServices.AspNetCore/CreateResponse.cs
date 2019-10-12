@@ -14,10 +14,12 @@ namespace GenericServices.AspNetCore
     /// </summary>
     public static class CreateResponse
     {
+#pragma warning disable 1591
         public const int OkStatusCode = 200;
         public const int CreatedStatusCode = 201;
         public const int ResultIsNullStatusCode = 204;
         public const int ErrorsStatusCode = 400;
+#pragma warning restore 1591
 
         /// <summary>
         /// This will return a HTTP 200 with the status message if Valid,

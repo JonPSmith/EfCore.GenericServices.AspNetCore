@@ -60,7 +60,7 @@ namespace Test.UnitTests.ExampleApp
 
                 //VERIFY
                 service.HasErrors.ShouldBeTrue(service.GetAllErrors());
-                service.GetAllErrors().ShouldEqual("Business logic says the name canot end with !");
+                service.GetAllErrors().ShouldEqual("Business logic says the name cannot end with !");
             }
         }
 
