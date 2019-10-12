@@ -1,10 +1,9 @@
 # Release Notes
 
-## TODO
+## 4.0.0
 
-- Make it a dual NetStandard2.0/NetStandard2.1 NET package:
-   - Select new 3.0 NuGet packages: including TestSupport, GenericServices and GenericBizRunner
-   - ExampleWebApi: Convert to AspNetCore 3.0
+- Support both EF Core >=2.1 and EF Core >=3.0 by supporting NetStandard2.0 and NetStandard2.1.
+- Updated with latest EfCore.GenericServices and EfCore.GenericBizrunner
 
 ## 3.0.2
 
