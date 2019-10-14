@@ -1,7 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+    <PackageReference Include="EfCore.GenericBizRunner" Version="4.0.0" />
+    <PackageReference Include="EfCore.GenericServices" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="EfCore.GenericBizRunner" Version="4.0.0" />
+    <PackageReference Include="EfCore.GenericServices" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageVersion>4.0.0</PackageVersion>
     <Version>4.0.0</Version>
@@ -30,15 +53,12 @@
     <DocumentationFile>bin\Debug\netcoreapp2.0\GenericServices.AspNetCore.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>bin\Release\netcoreapp2.0\GenericServices.AspNetCore.xml</DocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="EfCore.GenericBizRunner" Version="4.0.0" />
-    <PackageReference Include="EfCore.GenericServices" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
-    <PackageReference Include="NetCore.AutoRegisterDi" Version="1.1.0" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
+    <DocumentationFile>bin\Release\netcoreapp2.1\GenericServices.AspNetCore.xml</DocumentationFile>
+  </PropertyGroup>
 
 </Project>
