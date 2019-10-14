@@ -2,8 +2,8 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Linq;
+using CommonWebParts.Dtos;
 using ExampleWebApi.Controllers;
-using ExampleWebApi.Dtos;
 using GenericBizRunner;
 using GenericServices.AspNetCore;
 using GenericServices.AspNetCore.UnitTesting;

@@ -3,11 +3,10 @@
 
 using System.Linq;
 using System.Threading.Tasks;
+using CommonWebParts;
+using CommonWebParts.Dtos;
 using ExampleDatabase;
-using ExampleWebApi.BusinessLogic;
 using ExampleWebApi.Controllers;
-using ExampleWebApi.Dtos;
-using ExampleWebApi.Helpers;
 using GenericBizRunner;
 using GenericServices.AspNetCore;
 using GenericServices.AspNetCore.UnitTesting;

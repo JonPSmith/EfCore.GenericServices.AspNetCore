@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using CommonWebParts;
+using CommonWebParts.Dtos;
 using ExampleDatabase;
-using ExampleWebApi.BusinessLogic;
-using ExampleWebApi.Dtos;
 using GenericBizRunner;
 using GenericServices;
 using GenericServices.AspNetCore;

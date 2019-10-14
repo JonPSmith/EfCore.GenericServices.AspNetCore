@@ -2,15 +2,11 @@
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
 using System.ComponentModel.DataAnnotations;
-using ExampleDatabase;
-using GenericServices;
 
-namespace ExampleWebApi.Dtos
+namespace CommonWebParts.Dtos
 {
-    public class CreateTodoHybridDto : ILinkToEntity<TodoItemHybrid>
+    public class CreateTodoDto
     {
-        public int Id { get; set; }
-
         [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
 

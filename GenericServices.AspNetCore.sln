@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleWebApi", "ExampleWeb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleDatabase", "ExampleDatabase\ExampleDatabase.csproj", "{F1724955-5C7C-42A5-BF1A-CAF71A0AAC4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonWebParts", "CommonWebParts\CommonWebParts.csproj", "{D31AB1BC-BEE7-481D-96D4-A7A3ED0B7806}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{F1724955-5C7C-42A5-BF1A-CAF71A0AAC4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1724955-5C7C-42A5-BF1A-CAF71A0AAC4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1724955-5C7C-42A5-BF1A-CAF71A0AAC4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D31AB1BC-BEE7-481D-96D4-A7A3ED0B7806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D31AB1BC-BEE7-481D-96D4-A7A3ED0B7806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D31AB1BC-BEE7-481D-96D4-A7A3ED0B7806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D31AB1BC-BEE7-481D-96D4-A7A3ED0B7806}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,10 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
+using CommonWebParts;
+using CommonWebParts.Dtos;
 using ExampleDatabase;
-using ExampleWebApi.BusinessLogic;
-using ExampleWebApi.Dtos;
-using ExampleWebApi.Helpers;
 using GenericBizRunner.Configuration;
 using GenericServices.Configuration;
 using GenericServices.Setup;
@@ -22,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NetCore.AutoRegisterDi;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ExampleWebApi
@@ -60,7 +60,9 @@ namespace ExampleWebApi
 
             //GenericBizRunner configuration
             services.RegisterBizRunnerWithDtoScans<ExampleDbContext>(Assembly.GetAssembly(typeof(CreateTodoBizLogic)));
-            services.AddTransient(typeof(ICreateTodoBizLogic), typeof(CreateTodoBizLogic));
+            //this registers the all the class/interfaces in the given assembly. In this case the business logic
+            services.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(CreateTodoBizLogic)))
+                .AsPublicImplementedInterfaces();
 
             services.AddSwaggerGen(c =>
             {

@@ -1,11 +1,11 @@
 ﻿// Copyright (c) 2018 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using CommonWebParts.Dtos;
 using ExampleDatabase;
-using ExampleWebApi.Dtos;
 using GenericBizRunner;
 
-namespace ExampleWebApi.BusinessLogic
+namespace CommonWebParts
 {
     public interface ICreateTodoBizLogic : IGenericActionWriteDb<CreateTodoDto, TodoItem> { }
 
@@ -20,7 +20,7 @@ namespace ExampleWebApi.BusinessLogic
 
         public TodoItem BizAction(CreateTodoDto inputData)
         {
-            if (inputData.Name.EndsWith('!'))
+            if (inputData.Name.EndsWith("!"))
                 AddError("Business logic says the name cannot end with !", nameof(inputData.Name));
 
             var item = new TodoItem(inputData.Name, inputData.Difficulty);

@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonWebParts\CommonWebParts.csproj" />
     <ProjectReference Include="..\ExampleDatabase\ExampleDatabase.csproj" />
     <ProjectReference Include="..\ExampleWebApi\ExampleWebApi.csproj" />
     <ProjectReference Include="..\GenericServices.AspNetCore\GenericServices.AspNetCore.csproj" />

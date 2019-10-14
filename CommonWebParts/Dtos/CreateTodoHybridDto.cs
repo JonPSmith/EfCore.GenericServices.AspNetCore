@@ -5,13 +5,19 @@ using System.ComponentModel.DataAnnotations;
 using ExampleDatabase;
 using GenericServices;
 
-namespace ExampleWebApi.Dtos
+namespace CommonWebParts.Dtos
 {
-    public class ChangeNameHybridDto : ILinkToEntity<TodoItemHybrid>
+    public class CreateTodoHybridDto : ILinkToEntity<TodoItemHybrid>
     {
         public int Id { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
+
+        /// <summary>
+        /// This represents the difficulty of setting it up: 1 = easy, 5 = hard
+        /// </summary>
+        [Range(1, 5)]
+        public int Difficulty { get; set; }
     }
 }

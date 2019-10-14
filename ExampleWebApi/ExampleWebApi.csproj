@@ -5,7 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonWebParts\CommonWebParts.csproj" />
     <ProjectReference Include="..\ExampleDatabase\ExampleDatabase.csproj" />
     <ProjectReference Include="..\GenericServices.AspNetCore\GenericServices.AspNetCore.csproj" />
   </ItemGroup>
