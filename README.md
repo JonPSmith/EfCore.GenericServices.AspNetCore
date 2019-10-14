@@ -6,8 +6,7 @@ and [EfCore.GenericBizRunner](https://github.com/JonPSmith/EfCore.GenericBizRunn
 1. [ASP.NET Core MVC or Razor pages](#1-aspnet-core-mvc-or-razor-pages---copy-status-to-modelstate) - copy to `ModelState`.
 2. [ASP.NET Core Web API](#2-aspnet-core-web-api---forming-the-correct-http-response) - form correct HTTP response.
 
-The library also contains code for that user EfCore.GenericService or EfCore.GenericBizRunner. 
-See information at [end of the Readme file](#unit-testintegration-test-of-web-apis).
+The library also contains code for unit/ntergration testing of code that uses EfCore.GenericService or EfCore.GenericBizRunner in ASP.NET Core controllers. See information at [end of the Readme file](#unit-testintegration-test-of-web-apis).
 
 *NOTE: If you are interested in using EfCore.GenericService or EfCore.GenericBizRunner in Web APIs then see the article
 ["How to write good, testable ASP.NET Core Web API code quickly"](https://www.thereformedprogrammer.net/how-to-write-good-testable-asp-net-core-web-api-code-quickly/)
