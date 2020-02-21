@@ -37,7 +37,8 @@ namespace ExampleWebApi.Controllers
         [HttpGet("{id}", Name = "GetSingleTodo")]
         public async Task<ActionResult<WebApiMessageAndResult<TodoItem>>> GetSingleAsync(int id, [FromServices]ICrudServicesAsync service)
         {
-            return service.Response(await service.ReadSingleAsync<TodoItem>(id));
+            var result = await service.ReadSingleAsync<TodoItem>(id);
+            return service.Response(result);
         }
 
         /// <summary>

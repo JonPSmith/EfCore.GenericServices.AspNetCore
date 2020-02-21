@@ -83,7 +83,7 @@ namespace GenericServices.AspNetCore
         }
 
         /// <summary>
-        /// This will return a result value, with the status Message
+        /// This will return a result value, with the status Message. There are three possibilities:
         /// 1. If there are no errors and the results is not null it will return a HTTP 200 response
         ///    plus a json containing the message from the status and the results object
         /// 2. If there are no errors but result is  null it will return a HTTP 204 (NoContent) with the status Message
@@ -99,7 +99,7 @@ namespace GenericServices.AspNetCore
         }
 
         /// <summary>
-        /// This will return a result value, with the status Message
+        /// This will return a result value, with the status Message. There are three possibilities:
         /// 1. If there are no errors and the result is not null it will return a HTTP response with the status code provided
         ///    in the validStatusCode property, plus a json containing the message from the status and the results object
         /// 2. If there are no errors but result is  null it will return a HTTP 204 (NoContent) with the status Message
