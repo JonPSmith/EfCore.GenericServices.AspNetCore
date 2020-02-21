@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using StatusGeneric;
 
 namespace GenericServices.AspNetCore
 {
@@ -25,7 +26,7 @@ namespace GenericServices.AspNetCore
         /// </summary>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static ActionResult<WebApiMessageOnly> Response(this GenericServices.IStatusGeneric status)
+        public static ActionResult<WebApiMessageOnly> Response(this IStatusGeneric status)
         {
             return status.ResponseWithValidCode(OkStatusCode);
         }
@@ -38,7 +39,7 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="validStatusCode">HTTP status code for non-error status</param>
         /// <returns></returns>
-        public static ActionResult<WebApiMessageOnly> ResponseWithValidCode(this GenericServices.IStatusGeneric status, int validStatusCode)
+        public static ActionResult<WebApiMessageOnly> ResponseWithValidCode(this IStatusGeneric status, int validStatusCode)
         {
             if (status.IsValid)
                 return new ObjectResult(new WebApiMessageOnly(status)) { StatusCode = validStatusCode };
@@ -53,7 +54,7 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="createdRoute"></param>
         /// <returns></returns>
-        public static IActionResult Response(this GenericServices.IStatusGeneric status, CreatedAtRouteResult createdRoute)
+        public static IActionResult Response(this IStatusGeneric status, CreatedAtRouteResult createdRoute)
         {
             if (status.IsValid)
                 return createdRoute;
@@ -71,7 +72,7 @@ namespace GenericServices.AspNetCore
         /// <param name="routeValues"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public static ActionResult<T> Response<T>(this GenericServices.IStatusGeneric status,
+        public static ActionResult<T> Response<T>(this IStatusGeneric status,
             ControllerBase controller, string routeName, object routeValues, T dto)
         {
             if (status.IsValid)
@@ -92,7 +93,7 @@ namespace GenericServices.AspNetCore
         /// <param name="status"></param>
         /// <param name="results"></param>
         /// <returns></returns>
-        public static ActionResult<WebApiMessageAndResult<T>> Response<T>(this GenericServices.IStatusGeneric status, T results) 
+        public static ActionResult<WebApiMessageAndResult<T>> Response<T>(this IStatusGeneric status, T results) 
         {
             return status.ResponseWithValidCode(results, OkStatusCode);
         }
@@ -110,7 +111,7 @@ namespace GenericServices.AspNetCore
         /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
         /// <param name="nullResultStatusCode">Optional, default is 204: The status code to return if the there ar no errors, but the result is null</param>
         /// <returns></returns>
-        public static ActionResult<WebApiMessageAndResult<T>> ResponseWithValidCode<T>(this GenericServices.IStatusGeneric status, T results, 
+        public static ActionResult<WebApiMessageAndResult<T>> ResponseWithValidCode<T>(this IStatusGeneric status, T results, 
             int validStatusCode, int nullResultStatusCode = ResultIsNullStatusCode)
         {
             if (status.IsValid)
@@ -119,96 +120,6 @@ namespace GenericServices.AspNetCore
 
             //it has errors
             return CreateBadRequestObjectResult(status.Errors.Select(x => x.ErrorResult));
-        }
-
-        //-----------------------------------------------------
-        // -- Now the GenericBizRunner versions
-
-        /// <summary>
-        /// This will return a HTTP 200 with the status message if Valid,
-        /// otherwise it will returns a HTTP 400 with the error information in the standard WebAPI format
-        /// </summary>
-        /// <param name="status"></param>
-        /// <returns></returns>
-        public static ActionResult<WebApiMessageOnly> Response(this GenericBizRunner.IStatusGeneric status)
-        {
-            return status.ResponseWithValidCode(OkStatusCode);
-        }
-
-        /// <summary>
-        /// If the status has no errors then it will HTTP response with the status code provided in the
-        /// validStatusCode property and the message from the status
-        /// otherwise it will returns a HTTP 400 with the error information in the standard WebAPI format
-        /// </summary>
-        /// <param name="status"></param>
-        /// <param name="validStatusCode">HTTP status code for non-error status</param>
-        /// <returns></returns>
-        public static ActionResult<WebApiMessageOnly> ResponseWithValidCode(this GenericBizRunner.IStatusGeneric status, int validStatusCode)
-        {
-            if (!status.HasErrors)
-                return new ObjectResult(new WebApiMessageOnly(status)) { StatusCode = validStatusCode };
-
-            //it has errors
-            return CreateBadRequestObjectResult(status.Errors);
-        }
-
-        /// <summary>
-        /// This allows you to return a CreatedAtRoute result for a Create
-        /// </summary>
-        /// <param name="status"></param>
-        /// <param name="controller"></param>
-        /// <param name="routeName">The values needed to work with the HttpGet to return the correct item</param>
-        /// <param name="routeValues"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        public static ActionResult<T> Response<T>(this GenericBizRunner.IStatusGeneric status, 
-            ControllerBase controller, string routeName, object routeValues, T dto)
-        {
-            if (!status.HasErrors)
-                return controller.CreatedAtRoute(routeName, routeValues, dto);
-
-            //it has errors
-            return CreateBadRequestObjectResult(status.Errors);
-        }
-
-        /// <summary>
-        /// This will return a result value, with the status Message
-        /// 1. If there are no errors and the result is not null it will return a HTTP 200 response
-        ///    plus a json containing the message from the status and the results object
-        /// 2. If there are no errors but result is  null it will return a HTTP 204 (NoContent) with the status Message
-        /// 3. If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="status"></param>
-        /// <param name="results"></param>
-        /// <returns></returns>
-        public static ActionResult<WebApiMessageAndResult<T>> Response<T>(this GenericBizRunner.IStatusGeneric status, T results)
-        {
-            return status.ResponseWithValidCode(results, OkStatusCode);
-        }
-
-        /// <summary>
-        /// This will return a result value, with the status Message
-        /// 1. If there are no errors and the result is not null it will return a HTTP response with the status code provided
-        ///    in the validStatusCode property, plus a json containing the message from the status and the results object
-        /// 2. If there are no errors but result is  null it will return a HTTP 204 (NoContent) with the status Message
-        /// 3. If there are errors it returns a HTTP 400 with the error information in the standard WebAPI format
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="status"></param>
-        /// <param name="results"></param>
-        /// <param name="validStatusCode">The status code to return when the status has no errors and the result is not null</param>
-        /// <param name="nullResultStatusCode">Optional, default is 204: The status code to return if the there ar no errors, but the result is null</param>
-        /// <returns></returns>
-        public static ActionResult<WebApiMessageAndResult<T>> ResponseWithValidCode<T>(this GenericBizRunner.IStatusGeneric status, T results,
-            int validStatusCode, int nullResultStatusCode = ResultIsNullStatusCode)
-        {
-            if (!status.HasErrors)
-                return new ObjectResult(new WebApiMessageAndResult<T>(status, results))
-                    { StatusCode = results == null ? nullResultStatusCode : validStatusCode };
-
-            //it has errors
-            return CreateBadRequestObjectResult(status.Errors);
         }
 
         //---------------------------------------------------

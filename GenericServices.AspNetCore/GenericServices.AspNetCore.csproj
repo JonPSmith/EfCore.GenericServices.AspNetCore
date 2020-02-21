@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>3.0.2</PackageVersion>
-    <Version>3.0.2</Version>
-    <AssemblyVersion>3.0.2.0</AssemblyVersion>
-    <FileVersion>3.0.2.0</FileVersion>
-    <PackageId>EfCore.GenericServices.AspNetCore</PackageId>
+    <PackageVersion>3.1.0</PackageVersion>
+    <Version>3.1.0</Version>
+    <AssemblyVersion>3.1.0.0</AssemblyVersion>
+    <FileVersion>3.1.0.0</FileVersion>
+    <PackageId>EfCore.AspNetCore</PackageId>
     <Authors>Jon P Smith</Authors>
     <Company>Selective Analytics</Company>
     <Product>EfCore.GenericServices</Product>
@@ -19,22 +19,21 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Entity Framework Core, EfCore.GenericServices, ASP.NET Core</PackageTags>
     <PackageReleaseNotes>
-      - Minor change: CheckCreateResponse now returns list of validation errors, not a line saying there was one error.
+      - Supports StatusGeneric for GenericServices status.
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/EfCore.GenericServices/master/Images/EfCore-GenericServices-AspNetCoreNuGetIcon128.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp2.0\GenericServices.AspNetCore.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netcoreapp2.0\AspNetCore.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp2.0\GenericServices.AspNetCore.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netcoreapp2.0\AspNetCore.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EfCore.GenericBizRunner" Version="3.0.0" />
-    <PackageReference Include="EfCore.GenericServices" Version="1.3.0" />
+    <PackageReference Include="GenericServices.StatusGeneric" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>
 

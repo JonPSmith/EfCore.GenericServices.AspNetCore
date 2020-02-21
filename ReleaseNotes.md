@@ -6,6 +6,10 @@
    - Select new 3.0 NuGet packages: including TestSupport, GenericServices and GenericBizRunner
    - ExampleWebApi: Convert to AspNetCore 3.0
 
+## 3.1.0
+
+- Supports GenericServices.StatusGeneric for new GenericServices status.
+
 ## 3.0.2
 
 - Minor change: CheckCreateResponse now returns list of validation errors, not a line saying there was one error.

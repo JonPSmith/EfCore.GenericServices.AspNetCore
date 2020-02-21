@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AspNetCore;
 using ExampleDatabase;
-using ExampleWebApi.BusinessLogic;
 using ExampleWebApi.Dtos;
-using GenericBizRunner;
 using GenericServices;
 using GenericServices.AspNetCore;
 using Microsoft.AspNetCore.JsonPatch;

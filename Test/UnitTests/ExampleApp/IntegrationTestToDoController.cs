@@ -3,6 +3,8 @@
 
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCore;
+using AspNetCore.UnitTesting;
 using ExampleDatabase;
 using ExampleWebApi.BusinessLogic;
 using ExampleWebApi.Controllers;
@@ -11,11 +13,9 @@ using ExampleWebApi.Helpers;
 using GenericBizRunner;
 using GenericBizRunner.Configuration;
 using GenericServices.AspNetCore;
-using GenericServices.AspNetCore.UnitTesting;
 using GenericServices.Configuration;
 using GenericServices.PublicButHidden;
 using GenericServices.Setup;
-using Test.Helpers;
 using TestSupport.EfHelpers;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
