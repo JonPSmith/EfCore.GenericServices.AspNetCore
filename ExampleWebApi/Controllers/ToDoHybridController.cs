@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AspNetCore;
+using CommonWebParts.Dtos;
 using ExampleDatabase;
-using ExampleWebApi.Dtos;
 using GenericServices;
 using GenericServices.AspNetCore;
 using Microsoft.AspNetCore.JsonPatch;

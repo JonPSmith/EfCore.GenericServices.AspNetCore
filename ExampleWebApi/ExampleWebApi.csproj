@@ -1,19 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EfCore.GenericBizRunner" Version="4.1.0" />
     <PackageReference Include="EfCore.GenericServices" Version="3.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="GenericServices.StatusGeneric" Version="1.1.0" />
+    <PackageReference Include="NetCore.AutoRegisterDi" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonWebParts\CommonWebParts.csproj" />
     <ProjectReference Include="..\ExampleDatabase\ExampleDatabase.csproj" />
-    <ProjectReference Include="..\GenericServicesAspNetCore\GenericServices.AspNetCore.csproj" />
+    <ProjectReference Include="..\GenericServices.AspNetCore\GenericServices.AspNetCore.csproj" />
   </ItemGroup>
 
   <!-- Needed for Swagger-->

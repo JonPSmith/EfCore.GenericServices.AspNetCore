@@ -3,8 +3,8 @@
 
 using System.Linq;
 using AspNetCore.UnitTesting;
+using CommonWebParts.Dtos;
 using ExampleWebApi.Controllers;
-using ExampleWebApi.Dtos;
 using GenericServices.AspNetCore;
 using StatusGeneric;
 using Xunit;

@@ -2,12 +2,11 @@
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
 using System.Linq;
+using CommonWebParts;
+using CommonWebParts.Dtos;
 using TestSupport.EfHelpers;
 using Xunit;
 using ExampleDatabase;
-using ExampleWebApi.BusinessLogic;
-using ExampleWebApi.Dtos;
-using ExampleWebApi.Helpers;
 using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.ExampleApp
