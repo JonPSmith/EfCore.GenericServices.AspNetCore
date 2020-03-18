@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.1.0
+
+- Update: Now uses StatusGeneric for status class. This supports the new versions of EfCore.GenericServices, EfCorr.GenericBizRunner, and EfCore.GenericEventRunner.
+
 ## 4.0.0
 
 - Support both EF Core >=2.1 and EF Core >=3.0 by supporting NetStandard2.0 and NetStandard2.1.
