@@ -6,10 +6,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using GenericServices.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using StatusGeneric;
 
-namespace GenericServices.AspNetCore.UnitTesting
+namespace AspNetCore.UnitTesting
 {
     /// <summary>
     /// This contains extention methods to decode the response so that you can unit test/integeration test your Web API code
@@ -30,7 +32,7 @@ namespace GenericServices.AspNetCore.UnitTesting
         }
 
         /// <summary>
-        /// This converts the <see cref="ActionResult{WebApiMessageOnly}"/> created by <see cref="CreateResponse"/> into a GenericServices.IStatusGeneric
+        /// This converts the <see cref="ActionResult{WebApiMessageOnly}"/> created by <see cref="CreateResponse"/> into a IStatusGeneric
         /// </summary>
         /// <param name="actionResult"></param>
         /// <returns>a status which is similar to the original status (errors might not be in the exact same form)</returns>
@@ -56,7 +58,7 @@ namespace GenericServices.AspNetCore.UnitTesting
         }
 
         /// <summary>
-        /// This converts the <see cref="ActionResult{T}"/> used in a create action into a GenericServices.IStatusGeneric
+        /// This converts the <see cref="ActionResult{T}"/> used in a create action into a IStatusGeneric
         /// </summary>
         /// <param name="actionResult"></param>
         /// <param name="routeName"></param>
@@ -90,7 +92,7 @@ namespace GenericServices.AspNetCore.UnitTesting
         }
 
         /// <summary>
-        /// This converts the <see cref="ActionResult{WebApiMessageAndResult{T}}"/> created by <see cref="CreateResponse"/> into a GenericServices.IStatusGeneric
+        /// This converts the <see cref="ActionResult{WebApiMessageAndResult{T}}"/> created by <see cref="CreateResponse"/> into a IStatusGeneric
         /// </summary>
         /// <param name="actionResult"></param>
         /// <returns>a status which is similar to the original status (errors might not be in the exact same form)</returns>

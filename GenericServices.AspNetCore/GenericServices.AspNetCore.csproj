@@ -5,14 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
-    <PackageReference Include="EfCore.GenericBizRunner" Version="4.0.0" />
-    <PackageReference Include="EfCore.GenericServices" Version="3.0.0" />
+    <PackageReference Include="EfCore.GenericBizRunner" Version="4.1.0" />
+    <PackageReference Include="EfCore.GenericServices" Version="3.1.0" />
+    <PackageReference Include="GenericServices.StatusGeneric" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="EfCore.GenericBizRunner" Version="4.0.0" />
-    <PackageReference Include="EfCore.GenericServices" Version="3.0.0" />
+    <PackageReference Include="EfCore.GenericBizRunner" Version="4.1.0" />
+    <PackageReference Include="EfCore.GenericServices" Version="3.1.0" />
+    <PackageReference Include="GenericServices.StatusGeneric" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>
 
@@ -26,10 +28,10 @@
 
   <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>4.0.0</PackageVersion>
-    <Version>4.0.0</Version>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.0.0</FileVersion>
+    <PackageVersion>4.1.0-preview001</PackageVersion>
+    <Version>4.1.0</Version>
+    <AssemblyVersion>4.1.0.0</AssemblyVersion>
+    <FileVersion>4.1.0.0</FileVersion>
     <PackageId>EfCore.GenericServices.AspNetCore</PackageId>
     <Authors>Jon P Smith</Authors>
     <Company>Selective Analytics</Company>
@@ -42,8 +44,7 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Entity Framework Core, EfCore.GenericServices, ASP.NET Core</PackageTags>
     <PackageReleaseNotes>
-      - Support both EF Core &gt;=2.1 and EF Core &gt;=3.0 by supporting NetStandard2.0 and NetStandard2.1.
-      - Updated with latest EfCore.GenericServices and EfCore.GenericBizrunner
+      - Update: Now uses StatusGeneric for GenericServices status. Linked to new versions of GenericServices and GenericBizRunner.
     </PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/JonPSmith/EfCore.GenericServices.AspNetCore/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/EfCore.GenericServices/master/Images/EfCore-GenericServices-AspNetCoreNuGetIcon128.png</PackageIconUrl>

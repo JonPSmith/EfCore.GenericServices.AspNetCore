@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using GenericServices.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using StatusGeneric;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 
@@ -13,12 +14,12 @@ namespace Test.Helpers
 {
     public static class ResponseCheckers
     {
-        public static void CheckResponse(this ActionResult<WebApiMessageOnly> actionResult, GenericServices.IStatusGeneric status)
+        public static void CheckResponse(this ActionResult<WebApiMessageOnly> actionResult, IStatusGeneric status)
         {
             actionResult.CheckResponseWithValidCode(status, CreateResponse.OkStatusCode);
         }
 
-        public static void CheckResponseWithValidCode(this ActionResult<WebApiMessageOnly> actionResult, GenericServices.IStatusGeneric status, int validStatusCode)
+        public static void CheckResponseWithValidCode(this ActionResult<WebApiMessageOnly> actionResult, IStatusGeneric status, int validStatusCode)
         {
             actionResult.ShouldNotBeNull();
             var result = actionResult.Result as ObjectResult;
@@ -36,12 +37,12 @@ namespace Test.Helpers
             }
         }
 
-        public static void CheckResponse<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, GenericServices.IStatusGeneric status, T results)
+        public static void CheckResponse<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, IStatusGeneric status, T results)
         {
             actionResult.CheckResponseWithValidCode<T>(status, results, CreateResponse.OkStatusCode);
         }
 
-        public static void CheckResponseWithValidCode<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, GenericServices.IStatusGeneric status, T results, 
+        public static void CheckResponseWithValidCode<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, IStatusGeneric status, T results, 
             int validStatusCode, int nullResultStatusCode = CreateResponse.ResultIsNullStatusCode)
         {
             actionResult.ShouldNotBeNull();
@@ -57,57 +58,6 @@ namespace Test.Helpers
             else
             {
                 CheckErrorResponse(result as BadRequestObjectResult, status.Errors.Select(x => x.ErrorResult));
-            }
-        }
-
-        //----------------------------------------------------
-        //Now the GenericBixRunner
-
-        public static void CheckResponse(this ActionResult<WebApiMessageOnly> actionResult, GenericBizRunner.IStatusGeneric status)
-        {
-            actionResult.CheckResponseWithValidCode(status, CreateResponse.OkStatusCode);
-        }
-
-        public static void CheckResponseWithValidCode(this ActionResult<WebApiMessageOnly> actionResult, GenericBizRunner.IStatusGeneric status, 
-            int validStatusCode)
-        {
-            actionResult.ShouldNotBeNull();
-            var result = actionResult.Result as ObjectResult;
-            if (!status.HasErrors)
-            {
-                actionResult.ShouldNotBeNull();
-                Assert.NotNull(result);
-                result.StatusCode.ShouldEqual(validStatusCode);
-                var returnClass = result.Value as WebApiMessageOnly;
-                returnClass?.Message.ShouldEqual(status.Message);
-            }
-            else
-            {
-                CheckErrorResponse(result as BadRequestObjectResult, status.Errors);
-            }
-        }
-
-        public static void CheckResponse<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, GenericBizRunner.IStatusGeneric status, T results)
-        {
-            actionResult.CheckResponseWithValidCode<T>(status, results, CreateResponse.OkStatusCode);
-        }
-
-        public static void CheckResponseWithValidCode<T>(this ActionResult<WebApiMessageAndResult<T>> actionResult, GenericBizRunner.IStatusGeneric status, T results, 
-            int validStatusCode, int nullResultStatusCode = CreateResponse.ResultIsNullStatusCode)
-        {
-            actionResult.ShouldNotBeNull();
-            var result = actionResult.Result as ObjectResult;
-            if (!status.HasErrors)
-            {
-                Assert.NotNull(result);
-                result.ShouldNotBeNull();
-                result.StatusCode.ShouldEqual(results == null ? nullResultStatusCode : validStatusCode);
-                var returnClass = result.Value as WebApiMessageOnly;
-                returnClass?.Message.ShouldEqual(status.Message);
-            }
-            else
-            {
-                CheckErrorResponse(result as BadRequestObjectResult, status.Errors);
             }
         }
 

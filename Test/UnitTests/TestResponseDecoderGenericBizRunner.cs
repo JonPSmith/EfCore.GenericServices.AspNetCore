@@ -2,13 +2,15 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Linq;
-using CommonWebParts.Dtos;
+using AspNetCore;
+using AspNetCore.UnitTesting;
 using ExampleWebApi.Controllers;
-using GenericBizRunner;
+using ExampleWebApi.Dtos;
 using GenericServices.AspNetCore;
-using GenericServices.AspNetCore.UnitTesting;
+using StatusGeneric;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
+
 
 namespace Test.UnitTests
 {

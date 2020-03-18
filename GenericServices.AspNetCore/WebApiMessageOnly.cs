@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2018 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
+using StatusGeneric;
+
 namespace GenericServices.AspNetCore
 {
     /// <summary>
@@ -8,20 +10,12 @@ namespace GenericServices.AspNetCore
     /// </summary>
     public class WebApiMessageOnly
     {
-        /// <summary>
-        /// This is used to create a Message-only response from GenericServices
-        /// </summary>
-        /// <param name="status"></param>
-        public WebApiMessageOnly(GenericServices.IStatusGeneric status)
-        {
-            Message = status.Message;
-        }
 
         /// <summary>
-        /// This is used to create a Message-only response from GenericBizRunner
+        /// This is used to create a Message-only response from new GenericServices
         /// </summary>
         /// <param name="status"></param>
-        public WebApiMessageOnly(GenericBizRunner.IStatusGeneric status)
+        public WebApiMessageOnly(IStatusGeneric status)
         {
             Message = status.Message;
         }

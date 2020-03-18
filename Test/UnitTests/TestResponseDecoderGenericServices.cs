@@ -2,11 +2,11 @@
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
 using System.Linq;
-using CommonWebParts.Dtos;
+using AspNetCore.UnitTesting;
 using ExampleWebApi.Controllers;
-using GenericServices;
+using ExampleWebApi.Dtos;
 using GenericServices.AspNetCore;
-using GenericServices.AspNetCore.UnitTesting;
+using StatusGeneric;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 
@@ -225,7 +225,7 @@ namespace Test.UnitTests
         public void TestCreateStatusOk()
         {
             //SETUP
-            var status = new GenericBizRunner.StatusGenericHandler();
+            var status = new StatusGenericHandler();
             var controller = new ToDoController();
             var dto = new CreateTodoDto();
             var actionResult = status.Response(controller, "Get", new { id = 7 }, dto);
@@ -244,7 +244,7 @@ namespace Test.UnitTests
         public void TestCreateStatusWithErrorsOk()
         {
             //SETUP
-            var status = new GenericBizRunner.StatusGenericHandler();
+            var status = new StatusGenericHandler();
             var controller = new ToDoController();
             var dto = new CreateTodoDto();
 
@@ -265,7 +265,7 @@ namespace Test.UnitTests
         public void TestCreateStatusBadRouteNameOk()
         {
             //SETUP
-            var status = new GenericBizRunner.StatusGenericHandler();
+            var status = new StatusGenericHandler();
             var controller = new ToDoController();
             var dto = new CreateTodoDto();
             var actionResult = status.Response(controller, "Bad", new { id = 7 }, dto);
@@ -284,7 +284,7 @@ namespace Test.UnitTests
         public void TestCreateStatusBadDtoOk()
         {
             //SETUP
-            var status = new GenericBizRunner.StatusGenericHandler();
+            var status = new StatusGenericHandler();
             var controller = new ToDoController();
             var dto = new CreateTodoDto();
             var actionResult = status.Response(controller, "Get", new { id = 7 }, dto);
@@ -303,7 +303,7 @@ namespace Test.UnitTests
         public void TestCreateStatusRouteValueNamesNotMatchOk()
         {
             //SETUP
-            var status = new GenericBizRunner.StatusGenericHandler();
+            var status = new StatusGenericHandler();
             var controller = new ToDoController();
             var dto = new CreateTodoDto();
             var actionResult = status.Response(controller, "Get", new { bad = 7 }, dto);
@@ -322,7 +322,7 @@ namespace Test.UnitTests
         public void TestCreateStatusRouteValueTypeNotMatchOk()
         {
             //SETUP
-            var status = new GenericBizRunner.StatusGenericHandler();
+            var status = new StatusGenericHandler();
             var controller = new ToDoController();
             var dto = new CreateTodoDto();
             var actionResult = status.Response(controller, "Get", new { id = "hello" }, dto);
@@ -341,7 +341,7 @@ namespace Test.UnitTests
         public void TestCreateStatusRouteValueValueNotMatchOk()
         {
             //SETUP
-            var status = new GenericBizRunner.StatusGenericHandler();
+            var status = new StatusGenericHandler();
             var controller = new ToDoController();
             var dto = new CreateTodoDto();
             var actionResult = status.Response(controller, "Get", new { id = 999 }, dto);

@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using AutoMapper;
-using CommonWebParts;
-using CommonWebParts.Dtos;
 using ExampleDatabase;
+using ExampleWebApi.BusinessLogic;
+using ExampleWebApi.Dtos;
 using GenericBizRunner.Configuration;
 using GenericServices.Configuration;
 using GenericServices.Setup;
@@ -19,10 +18,9 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NetCore.AutoRegisterDi;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace ExampleWebApi
 {
@@ -38,7 +36,7 @@ namespace ExampleWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllers();
 
             //--------------------------------------------------------------------
             //var connection = Configuration.GetConnectionString("DefaultConnection");
@@ -56,17 +54,15 @@ namespace ExampleWebApi
                     DtoAccessValidateOnSave = true,  //This causes validation to happen on create/update via DTOs
                     DirectAccessValidateOnSave = true, //This causes validation to happen on direct create/update and delete
                     NoErrorOnReadSingleNull = true //When working with WebAPI you should set this flag. Responce then sends 404 on null result
-                },Assembly.GetAssembly(typeof(ChangeNameDto)));
+                }, Assembly.GetAssembly(typeof(ChangeNameDto)));
 
             //GenericBizRunner configuration
             services.RegisterBizRunnerWithDtoScans<ExampleDbContext>(Assembly.GetAssembly(typeof(CreateTodoBizLogic)));
-            //this registers the all the class/interfaces in the given assembly. In this case the business logic
-            services.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(CreateTodoBizLogic)))
-                .AsPublicImplementedInterfaces();
+            services.AddTransient(typeof(ICreateTodoBizLogic), typeof(CreateTodoBizLogic));
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API V1", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API V1", Version = "v1" });
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml#xml-comments
                 // Set the comments path for the Swagger JSON and UI.
@@ -76,10 +72,11 @@ namespace ExampleWebApi
                     throw new InvalidOperationException("The XML file does not exist for Swagger - see link above for more info.");
                 c.IncludeXmlComments(xmlPath);
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -95,13 +92,17 @@ namespace ExampleWebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
 
-            //app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

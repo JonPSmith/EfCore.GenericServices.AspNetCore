@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using CommonWebParts;
-using CommonWebParts.Dtos;
+using AspNetCore;
 using ExampleDatabase;
+using ExampleWebApi.BusinessLogic;
+using ExampleWebApi.Dtos;
 using GenericBizRunner;
 using GenericServices;
 using GenericServices.AspNetCore;
@@ -36,7 +37,8 @@ namespace ExampleWebApi.Controllers
         [HttpGet("{id}", Name = "GetSingleTodo")]
         public async Task<ActionResult<WebApiMessageAndResult<TodoItem>>> GetSingleAsync(int id, [FromServices]ICrudServicesAsync service)
         {
-            return service.Response(await service.ReadSingleAsync<TodoItem>(id));
+            var result = await service.ReadSingleAsync<TodoItem>(id);
+            return service.Response(result);
         }
 
         /// <summary>
