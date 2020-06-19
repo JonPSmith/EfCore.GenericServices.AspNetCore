@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.1.1
+
+- Bug fix: Changed to Microsoft.AspNetCore.Mvc.Core to solve issue #4.
+
 ## 4.1.0
 
 - Update: Now uses StatusGeneric for status class. This supports the new versions of EfCore.GenericServices, EfCorr.GenericBizRunner, and EfCore.GenericEventRunner.
